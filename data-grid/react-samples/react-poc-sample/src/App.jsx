@@ -6,14 +6,17 @@ import Home from './components/Home';
 import Grid from './components/Grid';
 import Adaptive from './components/Adaptive';
 
+const appBasePath = import.meta.env.DEV ? '/' : '/CustomDemos/868499';
+
 function App() {
   return (
-    <Router>
+    <Router basename={appBasePath}>
       <div className="app-container">
         <Navbar />
         <main className="app-main">
           <Routes>
             <Route path="/" element={<Grid />} />
+            <Route path="/index.html" element={<Grid />} />
             <Route path="/home" element={<Home />} />
             <Route path="/adaptive" element={<Adaptive />} />
           </Routes>

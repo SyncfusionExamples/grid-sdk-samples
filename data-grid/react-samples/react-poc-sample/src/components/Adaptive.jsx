@@ -98,7 +98,7 @@ function Adaptive() {
   .e-mobile-layout {
     position: relative;
     width: 360px;
-    height: 640px;
+    height: 600px;
     margin: auto;
     border: 16px #f4f4f4 solid;
     border-top-width: 60px;
@@ -175,7 +175,7 @@ function Adaptive() {
   }`;
     let grid;
     let checkboxObj;
-    const toolbarOptions = ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'Search', 'ColumnChooser', 'ExcelExport', 'PdfExport'];
+    const toolbarOptions = ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'Search', 'ColumnChooser', 'ExcelExport'];
     const renderingMode = 'Vertical';
     const editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
     const groupOptions = { showGroupedColumn: true };
@@ -217,10 +217,10 @@ function Adaptive() {
             <style>
                 {SAMPLE_CSS}
             </style>
-            <div className="col-md-9 e-bigger e-adaptive-demo">
+            <div className="adaptive-grid-column col-md-9 e-bigger e-adaptive-demo">
                 {!Browser.isDevice ? (<div className="e-mobile-layout">
                     <div className="e-mobile-content">
-                        <GridComponent id="adaptivebrowser" editSettings={editSettings} dataSource={gridData} height='100%' ref={(g) => { grid = g; }} enableAdaptiveUI={true} rowRenderingMode={renderingMode} allowFiltering={true} allowSorting={true} allowGrouping={false} showColumnChooser={true} showColumnMenu={true} allowPaging={true} groupSettings={groupOptions} filterSettings={filterOptions} toolbar={toolbarOptions} editSettings={editSettings} pageSettings={{ pageCount: 3, pageSizes: true }} load={load} toolbarClick={toolbarClick} allowExcelExport={true} allowPdfExport={true}>
+                        <GridComponent id="adaptivebrowser"  editSettings={editSettings} dataSource={gridData} height='350px' ref={(g) => { grid = g; }} enableAdaptiveUI={true} rowRenderingMode={renderingMode} allowFiltering={true} allowSorting={true} allowGrouping={false} showColumnChooser={true} showColumnMenu={true} allowPaging={true} groupSettings={groupOptions} filterSettings={filterOptions} toolbar={toolbarOptions} pageSettings={{ pageCount: 3, pageSizes: true }} load={load} toolbarClick={toolbarClick} allowExcelExport={true} allowPdfExport={true}>
                             <ColumnsDirective>
                                 {/* --------- Stacked header: Order Info --------- */}
                                 <ColumnDirective
@@ -228,18 +228,20 @@ function Adaptive() {
                                     field="OrderID"
                                     width={180}
                                     isPrimaryKey={true}
+                                     validationRules={{required: true}}
                                 />
                                 <ColumnDirective
                                     headerText="Order Info"
                                     editType='dropdownedit'
                                     field='OrderStatus'
+                                    width={150}
                                 />
 
 
                                 {/* --------- Stacked header: Customer Info --------- */}
                                 <ColumnDirective
                                     headerText="Customer"
-
+                                    width={150}
                                     field='CustomerName'
 
                                 />
@@ -248,6 +250,7 @@ function Adaptive() {
                                 <ColumnDirective
                                     headerText="ShipCountry"
                                     field="ShipCountry"
+                                    width={150}
 
 
                                 />
@@ -255,9 +258,10 @@ function Adaptive() {
                                     headerText="ShipDate"
                                     field="ShipDate"
                                     format={'dd/MM/yyyy'}
+                                     validationRules={{required: true}}
                                     type='date'
                                     editType='datepickeredit'
-
+                                    width={150}
 
                                 />
 
@@ -280,7 +284,7 @@ function Adaptive() {
                             headerText="Order Info"
                             editType='dropdownedit'
                             field='OrderStatus'
-
+                            width={150}
 
                         />
 
@@ -288,7 +292,7 @@ function Adaptive() {
                         {/* --------- Stacked header: Customer Info --------- */}
                         <ColumnDirective
                             headerText="Customer"
-
+                            width={150}
                             field='CustomerName'
 
                         />
@@ -297,7 +301,7 @@ function Adaptive() {
                         <ColumnDirective
                             headerText="ShipCountry"
                             field="ShipCountry"
-
+                            width={150}
 
                         />
                         <ColumnDirective
@@ -305,6 +309,7 @@ function Adaptive() {
                             field="ShipDate"
                             format={'dd/MM/yyyy'}
                             type='date'
+                            width={150}
                             editType='datepickeredit'
                         />
 
@@ -313,14 +318,6 @@ function Adaptive() {
 
                     <Inject services={[Filter, Sort, Group, Edit, Toolbar, Aggregate, Page, ExcelExport, PdfExport, ColumnChooser, ColumnMenu]} />
                 </GridComponent>)}
-            </div>
-            <div className='col-md-3 property-section'>
-                <PropertyPane >
-                        <div >
-                            <span>Enable horizontal row mode</span>
-                            <CheckBoxComponent ref={(scope) => { checkboxObj = scope; }} change={onChange.bind(this)} aria-label="Enable horizontal row mode" />
-                        </div>
-                </PropertyPane>
             </div>
         </div>
     </div>);
