@@ -1,0 +1,22 @@
+{
+  "framework": "react",
+  "type": "js",
+  "theme": "tailwind3",
+  "styling": "css",
+  "template": "grid",
+  "buildTool": "vite",
+  "components": [
+    "grid"
+  ],
+  "mcp": {
+    "integrated": false,
+    "editors": []
+  },
+  "skills": {
+    "installed": false
+  },
+  "version": "1.0.1",
+  "createdAt": "2026-08-26T04:35:33.205Z",
+  "updatedAt": "2026-08-26T04:35:33.213Z",
+  "syncfusionVersion": "1.0.1"
+}
