@@ -315,21 +315,11 @@ function Adaptive() {
                 </GridComponent>)}
             </div>
             <div className='col-md-3 property-section'>
-                <PropertyPane title='Properties'>
-                    <table id='property' title='Properties' className='property-panel-table' style={{ width: '100%', marginBottom: '20px' }}>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div>Enable horizontal row mode</div>
-                                </td>
-                                <td>
-                                    <div>
-                                        <CheckBoxComponent ref={(scope) => { checkboxObj = scope; }} change={onChange.bind(this)} aria-label="Enable horizontal row mode"></CheckBoxComponent>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <PropertyPane >
+                        <div >
+                            <span>Enable horizontal row mode</span>
+                            <CheckBoxComponent ref={(scope) => { checkboxObj = scope; }} change={onChange.bind(this)} aria-label="Enable horizontal row mode" />
+                        </div>
                 </PropertyPane>
             </div>
         </div>
