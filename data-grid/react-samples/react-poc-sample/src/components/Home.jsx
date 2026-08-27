@@ -112,223 +112,22 @@ function shippedDateHeaderTemplate() {
 
 
 
-function freightHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-money" aria-hidden="true" />
-      <span>Freight</span>
-    </div>
-  );
-}
 
-function statusHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-bolt" aria-hidden="true" />
-      <span>Status</span>
-    </div>
-  );
-}
 
-function priorityHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-circle-check e-icons" aria-hidden="true" />
-      <span>Priority</span>
-    </div>
-  );
-}
 
-function verifiedHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-circle-check e-icons" aria-hidden="true" />
-      <span>Verified</span>
-    </div>
-  );
-}
-/* --------------------------------------------------------
- * Status, Priority & Payment visual configuration
- * ----------------------------------------------------- */
 
-/* Order status: plain muted text with a small leading icon (no fill) */
-const orderStatusMap = {
-  Pending: { color: '#64748b', icon: 'e-icons e-clock' },
-  Shipped: { color: '#2563eb', icon: 'e-icons e-box' },
-  Delivered: { color: '#059669', icon: 'e-icons e-check' },
-  Processing: { color: '#4f46e5', icon: 'e-icons e-repeat' },
-  Cancelled: { color: '#dc2626', icon: 'e-icons e-close' },
-};
 
-/* Priority: outline pill — white background, colored border + text */
-const priorityMap = {
-  Low: { color: '#1a8245', border: '#bfe6cc' },
-  Medium: { color: '#b45309', border: '#f5d9a8' },
-  High: { color: '#c2410c', border: '#f6c6a6' },
-  Critical: { color: '#dc2626', border: '#f5b9b9' },
-};
 
-/* Payment status: filled pill badge with icon */
-const paymentStatusMap = {
-  Paid: { color: '#059669', bg: '#e3f6e8', icon: 'e-icons e-check' },
-  Pending: { color: '#b45309', bg: '#fff4e0', icon: 'e-icons e-clock' },
-};
 
-/* Avatar palette cycles by name length so colors stay consistent per row */
-const avatarPalette = [
-  { bg: '#e3f6e8', color: '#1a8245' },
-  { bg: '#e6f0ff', color: '#2563eb' },
-  { bg: '#fff4e0', color: '#b45309' },
-  { bg: '#f3e8ff', color: '#7c3aed' },
-  { bg: '#ffe9dd', color: '#c2410c' },
-];
-
-const getInitials = (name = '') =>
-  name.split(' ').filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('');
-
-/* Shared reset applied to every template's outer wrapper.
- * The grid sets a line-height on .e-rowcell equal to the active rowHeight
- * (e.g. 28 / 40 / 52px). Inline text inherits that line-height, so a single
- * <span> can end up as tall as the whole row — stacking two of them (name +
- * email) then overlaps into the next row. Resetting line-height to 'normal'
- * and controlling height explicitly on each badge/wrapper fixes both the
- * overlap and the inconsistent pill sizing. */
-const cellReset = { lineHeight: 'normal' };
-
-/* Order status template — plain text + icon, no background fill */
-const OrderStatusTemplate = (props) => {
-  const s = orderStatusMap[props.OrderStatus] || orderStatusMap.Pending;
-  return (
-    <div style={{ ...cellReset, display: 'inline-flex', alignItems: 'center', gap: '6px', height: '26px', color: s.color, fontWeight: '500', fontSize: '13px' }}>
-      <span className={s.icon} aria-hidden="true" style={{ fontSize: '14px', lineHeight: 'normal' }} />
-      <span style={{ lineHeight: 'normal' }}>{props.OrderStatus}</span>
-    </div>
-  );
-};
-
-/* Priority template — outline pill badge, fixed size regardless of text length */
-const PriorityTemplate = (props) => {
-  const p = priorityMap[props.Priority] || priorityMap.Low;
-  return (
-    <div
-      style={{
-        ...cellReset,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        width: '92px',
-        height: '26px',
-        boxSizing: 'border-box',
-        borderRadius: '999px',
-        background: '#ffffff',
-        color: p.color,
-        border: `1.5px solid ${p.border}`,
-        fontWeight: '600',
-        fontSize: '12.5px',
-      }}
-    >
-      {props.Priority}
-    </div>
-  );
-};
-
-/* Payment status template — filled pill with icon, fixed size */
-const PaymentStatusTemplate = (props) => {
-  const s = paymentStatusMap[props.PaymentStatus] || paymentStatusMap.Pending;
-  return (
-    <div
-      style={{
-        ...cellReset,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '6px',
-        width: '104px',
-        height: '26px',
-        boxSizing: 'border-box',
-        borderRadius: '999px',
-        background: s.bg,
-        color: s.color,
-        fontWeight: '600',
-        fontSize: '12.5px',
-      }}
-    >
-      <span className={s.icon} aria-hidden="true" style={{ fontSize: '13px', lineHeight: 'normal' }} />
-      <span style={{ lineHeight: 'normal' }}>{props.PaymentStatus}</span>
-    </div>
-  );
-};
-
-/* Customer template — avatar with initials, name + email link stacked.
- * Explicit line-height + a constrained, vertically-centered flex column
- * keeps the two lines from bleeding into neighboring rows. */
-const CustomerTemplate = (props) => {
-  const name = props.CustomerName || '';
-  const initials = getInitials(name);
-  const palette = avatarPalette[name.length % avatarPalette.length];
-  return (
-    <div style={{ ...cellReset, display: 'flex', alignItems: 'center', gap: '10px', }}>
-      <div
-        style={{
-          width: '28px',
-          height: '28px',
-          borderRadius: '50%',
-          background: palette.bg,
-          color: palette.color,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontWeight: '700',
-          fontSize: '11px',
-          lineHeight: 'normal',
-          flexShrink: 0,
-        }}
-      >
-        {initials}
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1px', minWidth: 0, overflow: 'hidden' }}>
-        <span
-          style={{
-            fontWeight: '600',
-            fontSize: '13px',
-            lineHeight: '1.3',
-            color: '#1f2937',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {name}
-        </span>
-        <a
-          href={`mailto:${props.Email}`}
-          style={{
-            fontSize: '11.5px',
-            lineHeight: '1.3',
-            color: '#2563eb',
-            textDecoration: 'underline',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {props.Email}
-        </a>
-      </div>
-    </div>
-  );
-};
 
 
 export default function Home() {
   const gridRef = useRef(null);
   const dropRef = useRef(null);
   // Settings state
-  const [rowHeight, setRowHeight] = useState('normal');
+
   const [selectionMode, setSelectionMode] = useState('Row');
-  const [dataCount, setDataCount] = useState(1000);
-  // const [dataSource, setDataSource] = useState(makeData(1000));
-  // const [secondGridData, setSecondGrid] = useState(makeData(100))
+
   // Row height mapping
   const rowHeightMap = {
     compact: 32,
@@ -336,50 +135,7 @@ export default function Home() {
     normal: 47,
   };
 
-  // Dropdown data
-  const rowHeightData = [
-    { text: 'Small', value: 'compact' },
-    { text: 'Medium', value: 'normal' },
-    { text: 'Large', value: 'relaxed' },
 
-  ];
-
-  const selectionModeData = [
-    { text: 'Row', value: 'Row' },
-    { text: 'Cell', value: 'Cell' },
-    { text: 'Both', value: 'Both' },
-  ];
-
-  const dataCountData = [
-    { text: '1,000', value: 1000 },
-    { text: '5,000', value: 5000 },
-    { text: '10,000', value: 100000 },
-  ];
-
-  // Handlers
-
-
-  const onSelectionModeChange = (e) => {
-    setSelectionMode(e.value);
-  };
-
-  const onDataCountChange = (e) => {
-    setDataCount(e.value);
-    setDataSource(makeData(e.value));
-  };
-  const rowHeightTemplate = () => (
-    <div>
-      <label>Row Height:    </label>
-
-      <DropDownListComponent
-        ref={dropRef}
-        dataSource={rowHeightData}
-        fields={{ text: 'text', value: 'value' }}
-        // value={}
-        change={onRowHeightChange}
-      />
-    </div>
-  );
 
   const toolbar = [
     'Add',
@@ -541,6 +297,7 @@ export default function Home() {
                   headerTemplate: orderDateHeaderTemplate,
                   filter: { type: 'Menu' },
                   format: 'yMd',
+                  editType: 'datepickeredit',
                   type: 'date',
                   width: 170,
                   textAlign: 'Left',
@@ -560,7 +317,7 @@ export default function Home() {
                   field: 'CustomerName',
                   headerText: 'Name',
                   width: 280,
-                  template: CustomerTemplate,
+                
                   headerTemplate: customerNameHeaderTemplate,
                   validationRules: { required: true },
                   disableHtmlEncode: true,
@@ -584,6 +341,7 @@ export default function Home() {
                   field: 'ShipDetails',
                   headerText: 'Ship Details',
                   width: 260,
+                  
                   disableHtmlEncode: true,
                 },
                 {
@@ -602,6 +360,7 @@ export default function Home() {
                   textAlign: 'Right',
                   filter: { type: 'Menu' },
                   type: 'date',
+                  editType: 'datepickeredit',
                   disableHtmlEncode: true,
                 },
                 {
@@ -609,6 +368,7 @@ export default function Home() {
                   headerText: 'ShipFee',
                   width: 180,
                   format: 'C2',
+                  editType:'numericedit',
                   textAlign: 'Right',
                   type: 'number',
                   disableHtmlEncode: true,
@@ -642,6 +402,7 @@ export default function Home() {
               headerText='Discount Amount'
               width={180}
               format='C2'
+              editType='numericedit'
               textAlign='Right'
               filter={{ type: 'Menu' }}
               type='number'
@@ -654,6 +415,7 @@ export default function Home() {
               headerText='Tax Amount'
               width={150}
               format='C2'
+              editType='numericedit'
               textAlign='Right'
               filter={{ type: 'Menu' }}
               type='number'
@@ -677,7 +439,6 @@ export default function Home() {
               field='Priority'
               headerText='Priority'
               width={130}
-              template={PriorityTemplate}
               editType={'dropdownedit'}
             />
 
@@ -696,7 +457,6 @@ export default function Home() {
               headerText='Payment Status'
               width={160}
               textAlign='Center'
-              template={PaymentStatusTemplate}
               editType='dropdownedit'
               disableHtmlEncode={true} />
           </ColumnsDirective>
