@@ -324,11 +324,9 @@ export default function Home() {
   const gridRef = useRef(null);
   const dropRef = useRef(null);
   // Settings state
-  const [rowHeight, setRowHeight] = useState('normal');
+
   const [selectionMode, setSelectionMode] = useState('Row');
-  const [dataCount, setDataCount] = useState(1000);
-  // const [dataSource, setDataSource] = useState(makeData(1000));
-  // const [secondGridData, setSecondGrid] = useState(makeData(100))
+
   // Row height mapping
   const rowHeightMap = {
     compact: 32,
@@ -336,50 +334,7 @@ export default function Home() {
     normal: 47,
   };
 
-  // Dropdown data
-  const rowHeightData = [
-    { text: 'Small', value: 'compact' },
-    { text: 'Medium', value: 'normal' },
-    { text: 'Large', value: 'relaxed' },
 
-  ];
-
-  const selectionModeData = [
-    { text: 'Row', value: 'Row' },
-    { text: 'Cell', value: 'Cell' },
-    { text: 'Both', value: 'Both' },
-  ];
-
-  const dataCountData = [
-    { text: '1,000', value: 1000 },
-    { text: '5,000', value: 5000 },
-    { text: '10,000', value: 100000 },
-  ];
-
-  // Handlers
-
-
-  const onSelectionModeChange = (e) => {
-    setSelectionMode(e.value);
-  };
-
-  const onDataCountChange = (e) => {
-    setDataCount(e.value);
-    setDataSource(makeData(e.value));
-  };
-  const rowHeightTemplate = () => (
-    <div>
-      <label>Row Height:    </label>
-
-      <DropDownListComponent
-        ref={dropRef}
-        dataSource={rowHeightData}
-        fields={{ text: 'text', value: 'value' }}
-        // value={}
-        change={onRowHeightChange}
-      />
-    </div>
-  );
 
   const toolbar = [
     'Add',
@@ -541,6 +496,7 @@ export default function Home() {
                   headerTemplate: orderDateHeaderTemplate,
                   filter: { type: 'Menu' },
                   format: 'yMd',
+                  editType: 'datepickeredit',
                   type: 'date',
                   width: 170,
                   textAlign: 'Left',
@@ -560,7 +516,7 @@ export default function Home() {
                   field: 'CustomerName',
                   headerText: 'Name',
                   width: 280,
-                  template: CustomerTemplate,
+                
                   headerTemplate: customerNameHeaderTemplate,
                   validationRules: { required: true },
                   disableHtmlEncode: true,
@@ -584,6 +540,7 @@ export default function Home() {
                   field: 'ShipDetails',
                   headerText: 'Ship Details',
                   width: 260,
+                  
                   disableHtmlEncode: true,
                 },
                 {
@@ -602,6 +559,7 @@ export default function Home() {
                   textAlign: 'Right',
                   filter: { type: 'Menu' },
                   type: 'date',
+                  editType: 'datepickeredit',
                   disableHtmlEncode: true,
                 },
                 {
@@ -609,6 +567,7 @@ export default function Home() {
                   headerText: 'ShipFee',
                   width: 180,
                   format: 'C2',
+                  editType:'numericedit',
                   textAlign: 'Right',
                   type: 'number',
                   disableHtmlEncode: true,
@@ -642,6 +601,7 @@ export default function Home() {
               headerText='Discount Amount'
               width={180}
               format='C2'
+              editType='numericedit'
               textAlign='Right'
               filter={{ type: 'Menu' }}
               type='number'
@@ -654,6 +614,7 @@ export default function Home() {
               headerText='Tax Amount'
               width={150}
               format='C2'
+              editType='numericedit'
               textAlign='Right'
               filter={{ type: 'Menu' }}
               type='number'
@@ -677,7 +638,6 @@ export default function Home() {
               field='Priority'
               headerText='Priority'
               width={130}
-              template={PriorityTemplate}
               editType={'dropdownedit'}
             />
 
@@ -696,7 +656,6 @@ export default function Home() {
               headerText='Payment Status'
               width={160}
               textAlign='Center'
-              template={PaymentStatusTemplate}
               editType='dropdownedit'
               disableHtmlEncode={true} />
           </ColumnsDirective>
