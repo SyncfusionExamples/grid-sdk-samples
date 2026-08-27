@@ -486,8 +486,7 @@ export default function Grid() {
   // Settings state
   const [rowHeight, setRowHeight] = useState('normal');
   const [selectionMode, setSelectionMode] = useState('Row');
-  // const [dataCount, setDataCount] = useState(1000);
-  // const [dataSource, setDataSource] = useState(makeData(1000));
+
   // Row height mapping
   const rowHeightMap = {
     compact: 32,
@@ -539,15 +538,11 @@ export default function Grid() {
   );
 
   const toolbar = [
-    'Add',
     'Edit',
     'Delete',
     'Update',
     'Cancel',
     { type: 'Separator' },
-    'ExcelExport',
-    'PdfExport',
-
 
   ];
 
@@ -592,26 +587,23 @@ export default function Grid() {
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'row',
         width: '100%',
-        height: '90vh',
-        gap: '12px',
-        overflow: 'hidden'
+        overflow: 'auto'
       }}
     >
       {/* Left Grid */}
       <div
         style={{
-          flex: 1,
-          minWidth: 0,
-          height: '100%',
-          padding: '30px'
+          float: 'left',
+          width: '49%',
+          padding: '10px'
         }}
       >
         <h3>Order Pending Grid</h3>
+        <br/>
         <GridComponent
           id="orders-grid"
+          className="fill-grid"
           ref={gridRef}
           query={firstGridQuery}
           dataSource={gridData}
@@ -620,9 +612,7 @@ export default function Grid() {
             args.enableSeamlessScrolling = true;
           }
           }
-
-
-          height="100%"
+          height="370"
           width="100%"
           allowSorting
           allowMultiSorting
@@ -668,6 +658,7 @@ export default function Grid() {
               field="OrderID"
               width={180}
               isPrimaryKey={true}
+               validationRules={{required: true}}
             />
             <ColumnDirective
               headerText="Order Info"
@@ -679,17 +670,17 @@ export default function Grid() {
                   headerText: 'Order Status',
                   width: 170,
                   textAlign: 'Left',
-                  disableHtmlEncode: true,
+                  editType:'dropdownedit',
                 },
                 {
                   field: 'OrderDate',
                   headerTemplate: orderDateHeaderTemplate,
                   filter: { type: 'Menu' },
+                   editType: 'datepickeredit',
                   format: 'yMd',
                   type: 'date',
                   width: 170,
                   textAlign: 'Left',
-                  disableHtmlEncode: true,
                 },
               ]}
 
@@ -735,6 +726,7 @@ export default function Grid() {
                   field: 'ShipCountry',
                   headerText: 'Ship Country',
                   width: 200,
+                  editType:'dropdownedit',
                   clipMode: 'Ellipsis',
                   disableHtmlEncode: true,
                 },
@@ -744,6 +736,7 @@ export default function Grid() {
                   width: 180,
                   headerTemplate: shippedDateHeaderTemplate,
                   format: 'yMd',
+                   editType: 'datepickeredit',
                   textAlign: 'Right',
                   filter: { type: 'Menu' },
                   type: 'date',
@@ -783,23 +776,24 @@ export default function Grid() {
       </div>
       <div
         style={{
-          flex: 1,
-          minWidth: 0,
-          height: '100%',
-          padding: '30px'
+          float: 'right',
+          width: '49%',
+          padding: '10px'
         }}
       >
         <h3>Order Completed Grid</h3>
+        <br/>
         <GridComponent
           id="second-grid"
+          className="fill-grid"
           ref={seconGridRef}
           dataSource={gridData}
           query={secondGridQuery}
           editSettings={{ allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Cell'}}
           columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending', 'Filter']}
 
-          height="100%"
-          width="800"
+          height="350"
+          width="100%"
           rowHeight={rowHeightMap.normal}
           allowSorting
           allowMultiSorting
@@ -831,6 +825,7 @@ export default function Grid() {
               width={180}
               freeze={"Left"}
               isPrimaryKey={true}
+               validationRules={{required: true}}
             />
             <ColumnDirective
               headerText="Order Info"
@@ -900,6 +895,7 @@ export default function Grid() {
                   field: 'ShipCountry',
                   headerText: 'Ship Country',
                   width: 200,
+                  editType:'dropdownedit',
                   clipMode: 'Ellipsis',
                   disableHtmlEncode: true,
                 },
@@ -907,6 +903,7 @@ export default function Grid() {
                   field: 'ShipDate',
                   headerText: 'Ship Date',
                   width: 180,
+                  editType: 'datepickeredit',
                   headerTemplate: shippedDateHeaderTemplate,
                   format: 'yMd',
                   textAlign: 'Right',

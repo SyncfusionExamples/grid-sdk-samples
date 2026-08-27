@@ -160,12 +160,11 @@ export default function Home() {
     }
   };
   return (
-    <div className="home-page" aria-label="Syncfusion workspace home">
 
-      <div className="workspace-content">
-
+      <div className="home-grid-parent">
         <GridComponent
           id="orders-grid"
+
           ref={gridRef}
           dataSource={gridData}
           columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending', 'Filter']}
@@ -175,8 +174,8 @@ export default function Home() {
             }
           }
           }
-          height="340"
-          width="1400"
+          height="250"
+          width="100%"
           rowHeight={rowHeightMap.normal}
           allowSorting
           allowMultiSorting
@@ -214,6 +213,7 @@ export default function Home() {
               field="OrderID"
               width={180}
               isPrimaryKey={true}
+               validationRules={{required: true}}
             />
             <ColumnDirective
               headerText="Order Info"
@@ -225,7 +225,8 @@ export default function Home() {
                   headerText: 'Order Status',
                   width: 170,
                   textAlign: 'Left',
-                  disableHtmlEncode: true,
+                  editType:'dropdownedit',
+                  editType:'dropdownedit',
                 },
                 {
                   field: 'OrderDate',
@@ -282,6 +283,7 @@ export default function Home() {
                 {
                   field: 'ShipCountry',
                   headerText: 'Ship Country',
+                  editType:'dropdownedit',
                   width: 200,
                   clipMode: 'Ellipsis',
                   disableHtmlEncode: true,
@@ -293,6 +295,7 @@ export default function Home() {
                   headerTemplate: shippedDateHeaderTemplate,
                   format: 'yMd',
                   textAlign: 'Right',
+                   validationRules:{required: true},
                   filter: { type: 'Menu' },
                   type: 'date',
                   editType: 'datepickeredit',
@@ -300,7 +303,7 @@ export default function Home() {
                 },
                 {
                   field: 'ShipFee',
-                  headerText: 'ShipFee',
+                  headerText: 'Ship Fee',
                   width: 180,
                   format: 'C2',
                   editType:'numericedit',
@@ -420,6 +423,7 @@ export default function Home() {
           />
         </GridComponent>
       </div>
-    </div>
+
+
   );
 }

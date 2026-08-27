@@ -19,22 +19,52 @@ html, body, #root {
 }
 
 .app-container {
-  display: flex;
-  flex-direction: column;
+
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  height: 500px;
+
 }
 
 .app-main {
-  flex: 1;
-  /* overflow: hidden; */
+ height: 500px;
+}
+
+.control-pane {
+  width: 100%;
+
+  padding: 20px 24px;
+  overflow: auto;
+}
+
+.control-section {
+  width: 100%;
+  height: 600px;
+  overflow: auto;
+}
+
+.control-section > .col-md-9,
+.control-section > .property-section {
+
+}
+
+.adaptive-grid-column {
+  float: left;
+  width: 74%;
+  height: 500px;
+}
+
+.adaptive-property-column {
+  float: right;
+  width: 24%;
+  height: 500px;
+}
+
+.fill-grid {
+  width: 100%;
 }
 
 .adaptive-property-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+ 
   gap: 12px;
   width: 100%;
   margin-bottom: 20px;
