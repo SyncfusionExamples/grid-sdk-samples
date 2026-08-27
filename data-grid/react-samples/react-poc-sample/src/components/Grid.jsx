@@ -505,17 +505,6 @@ export default function Grid() {
 
   ];
 
-  const selectionModeData = [
-    { text: 'Row', value: 'Row' },
-    { text: 'Cell', value: 'Cell' },
-    { text: 'Both', value: 'Both' },
-  ];
-
-  const dataCountData = [
-    { text: '1,000', value: 1000 },
-    { text: '5,000', value: 5000 },
-    { text: '10,000', value: 100000 },
-  ];
 
   // Handlers
   const onRowHeightChange = (e) => {
