@@ -570,7 +570,7 @@ export default function Grid() {
   const editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog', template: EditDialogTemplate };
   const pageSettings = { pageSize: 50 };
 
-  const groupSettings = { showDropArea: true, showGroupedColumn: true };
+  
 
   const toolbarClick = (args) => {
     const grid = gridRef.current;
@@ -806,12 +806,8 @@ export default function Grid() {
           ref={seconGridRef}
           dataSource={gridData}
           query={secondGridQuery}
-          editSettings={editSettings}
+          editSettings={{ allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Cell'}}
           columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending', 'Filter']}
-          load={(args) => {
-            args.enableSeamlessScrolling = true;
-          }
-          }
 
           height="100%"
           width="800"
@@ -823,7 +819,7 @@ export default function Grid() {
 
 
           allowSelection
-          selectionSettings={selectionSettings}
+          selectionSettings={{ type: 'Multiple', mode:'Cell' }}
 
           allowRowDragAndDrop={true}
 
@@ -857,14 +853,16 @@ export default function Grid() {
                   headerText: 'Order Status',
                   width: 170,
                   textAlign: 'Left',
+                  allowEditing: false,
                   disableHtmlEncode: true,
                 },
                 {
                   field: 'OrderDate',
                   headerTemplate: orderDateHeaderTemplate,
                   filter: { type: 'Menu' },
-                  format: 'yMd',
+                  format: 'dd/MM/yyyy',
                   type: 'date',
+                  editType: 'datepickeredit',
                   width: 170,
                   textAlign: 'Left',
                   disableHtmlEncode: true,
