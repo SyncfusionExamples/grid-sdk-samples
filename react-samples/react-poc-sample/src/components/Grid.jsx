@@ -319,7 +319,6 @@ function EditDialogTemplate(props) {
     textTransform: 'capitalize',
     letterSpacing: '0.3px'
   };
-  console.log('props', props);
 
   return (
     <div className="e-dialog-edit-template" style={editDialogStyle}>
