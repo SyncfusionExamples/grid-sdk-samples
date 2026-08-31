@@ -234,7 +234,7 @@ export default function Home() {
     { tooltipText: 'View Selected Records', id: 'viewSelectedRecords', prefixIcon: 'e-icons e-eye' },
     { type: 'Separator' },
     {  tooltipText: 'Clear all filters', id: 'quickfilter', prefixIcon: 'e-icons e-filter-clear' },
-    { text: 'Reset Defaults', tooltipText: 'Clear filters / sort / group / selection', id: 'reset', prefixIcon: 'e-icons e-refresh' },
+    { tooltipText: 'Reset To Defaults', tooltipText: 'Clear filters / sort / group / selection', id: 'reset', prefixIcon: 'e-icons e-refresh' },
     
         { type: 'Separator' },
     { id: 'editMode',  template: editModeToolbarTemplate },
@@ -453,23 +453,30 @@ export default function Home() {
 }
   const handleBulkUpdateOk = () => {
     const grid = gridRef.current;
-    if (!grid || !bulkUpdateField) return;
+        if (!grid || !bulkUpdateField) return;
     console.log(bulkUpdateField, bulkUpdateValue)
     let selectedRecords = grid.getSelectedRecords();
     bulkCellUpdate(bulkUpdateField, bulkUpdateValue, selectedRecords);
-    // grid.refresh();
+    gridRef.current.freezeRefresh();
     setIsBulkUpdateOpen(false);
+
   };
 
   const handleBulkUpdateCancel = () => {
+    setBulkUpdateField('');
+    setBulkUpdateValue('');
     setIsBulkUpdateOpen(false);
   };
 
 
   const handleExcelBind = () => {
     const grid = gridRef.current;
-    if (!grid || !excelFile) return;
-
+    if (!grid) return;
+    if(excelFile === null)
+    {
+       gridRef.current.changeDataSource(gridData, gridRef.current.getColumns());
+       return;
+    }
     const reader = new FileReader();
     reader.onload = (event) => {
       const workbook = XLSX.read(event.target.result, { type: 'array', cellDates: true });
@@ -533,8 +540,7 @@ export default function Home() {
   const onRemove = (args) => {
     console.log(args)
     setExcelFile(null);
-    // gridRef.current.dataSource = [];
-    gridRef.current.changeDataSource(gridData, gridRef.current.getColumns());
+   
   }
 
   return (
@@ -563,12 +569,12 @@ export default function Home() {
             placeholder="Column Field"
             dataSource={bulkUpdateFields}
             fields={{ text: 'text', value: 'value' }}
-            value={bulkUpdateField}
+            value={bulkUpdateField || null}
             change={(args) => setBulkUpdateField(args.value || '')}
             floatLabelType="Always"
           />
           <TextBoxComponent
-            placeholder="Input Field"
+            placeholder="Enter Value"
             value={bulkUpdateValue}
             input={(args) => setBulkUpdateValue(args.value || '')}
             floatLabelType="Always"
@@ -648,11 +654,9 @@ export default function Home() {
       <GridComponent
         id="orders-grid"
         ref={gridRef}
-        // allowRowDragAndDrop={!isDevice}
-        // frozenColumns={1}
         isRowPinned={(data)=>
         {
-          if(data && !isDevice && data.Priority === 'Critical' && data.PaymentStatus === 'Paid')
+          if(data && !isDevice && data.Priority === 'Critical' && data.PaymentStatus === 'Paid' && data.OrderStatus !== 'Delivered')
           {
             return true;
           }
