@@ -1,5 +1,5 @@
 import { Link } from 'react-router';
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   GridComponent,
   ColumnsDirective,
@@ -36,71 +36,18 @@ import * as XLSX from 'xlsx';
 
 import { gridData } from '../data/virtualData';
 
-const createDecoratedHeader = (iconClass, label, accentColor = '#2563eb') => {
+const createDecoratedHeader = (iconClass, label) => {
   return () => (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        boxSizing: 'border-box',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: '8px',
-        padding: '0 16px 0 10px',
-        borderRadius: '12px',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.98), rgba(239,246,255,0.96))',
-        border: `1px solid ${accentColor}35`,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.9), 0 2px 8px rgba(37, 99, 235, 0.08)',
-        color: '#0f172a',
-        fontWeight: 700,
-        letterSpacing: '0.02em',
-        overflow: 'hidden',
-        minWidth: 0,
-      }}
-    >
-      <span
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '22px',
-          height: '22px',
-          borderRadius: '7px',
-          background: accentColor,
-          color: '#fff',
-          fontSize: '11px',
-          boxShadow: '0 4px 10px rgba(37, 99, 235, 0.18)',
-          flexShrink: 0,
-        }}
-        className={iconClass}
-        aria-hidden="true"
-      />
-      <span
-        style={{
-          display: 'block',
-          flex: '1 1 auto',
-          minWidth: 0,
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          fontSize: '13px',
-          lineHeight: 1.2,
-          textAlign: 'center',
-        }}
-        title={label}
-      >
-        {label}
-      </span>
-      
+    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <span className={iconClass} aria-hidden="true" />
+      <span>{label}</span>
     </div>
   );
 };
 
-const customerNameHeaderTemplate = createDecoratedHeader('e-icons e-people', 'Customer', '#7c3aed');
-const orderDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Order Date', '#2563eb');
-const shippedDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Ship Date', '#0ea5e9');
+const customerNameHeaderTemplate = createDecoratedHeader('e-icons e-people', 'Customer');
+const orderDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Order Date');
+const shippedDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Ship Date');
 
 function createDateFilterTemplate(filterDate) {
   let dateElement;
@@ -177,9 +124,15 @@ export default function Home() {
   const [isExcelDialogOpen, setIsExcelDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [isSelectedRecordsDialogOpen, setIsSelectedRecordsDialogOpen] = useState(false);
-  const [totalRecordCount, setTotalRecordCount] = useState(gridData.length);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [isBatchEditMode, setIsBatchEditMode] = useState(false);
+  const [dropElement, setDropElement] = useState(null);
+
+  // Initialize dropElement after component mounts
+  useEffect(() => {
+    const element = document.getElementsByClassName('control-fluid')[0];
+    setDropElement(element || null);
+  }, []);
 
   const bulkUpdateFields = [
     { text: 'Order Status', value: 'OrderStatus' },
@@ -219,27 +172,23 @@ export default function Home() {
     </div>
   );
 
-  const toolbar = isDevice ? ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'ExcelExport',{ tooltipText: 'Bind from Excel', id: 'bindFromExcel', prefixIcon: 'e-icons e-export-xls' },
+  const toolbar = isDevice ? ['Add', 'Edit', 'Update', 'Cancel', 'ExcelExport',
     { tooltipText: 'View Selected Records', id: 'viewSelectedRecords', prefixIcon: 'e-icons e-eye' }, 'PdfExport'] : [
     'Add',
     'Edit',
-    'Delete',
     'Update',
     'Cancel',
     { type: 'Separator' },
     'ExcelExport',
     'PdfExport',
     { type: 'Separator' },
-    {  tooltipText: 'Bind from Excel', id: 'bindFromExcel', prefixIcon: 'e-icons e-export-xls' },
-    { tooltipText: 'View Selected Records', id: 'viewSelectedRecords', prefixIcon: 'e-icons e-eye' },
+    { text: 'View Selected Records',tooltipText: 'View Selected Records', id: 'viewSelectedRecords', prefixIcon: 'e-icons e-eye' },
     { type: 'Separator' },
     {  tooltipText: 'Clear all filters', id: 'quickfilter', prefixIcon: 'e-icons e-filter-clear' },
     { tooltipText: 'Reset To Defaults', tooltipText: 'Clear filters / sort / group / selection', id: 'reset', prefixIcon: 'e-icons e-refresh' },
     
-        { type: 'Separator' },
-    { id: 'editMode',  template: editModeToolbarTemplate },
-    
     { type: 'Separator' },
+
     
     {
       prefixIcon: 'e-icons e-small-icon',
@@ -270,7 +219,7 @@ export default function Home() {
   const editSettings = {
     allowEditing: true,
     allowAdding: true,
-    allowDeleting: true,
+    allowDeleting: false,
     ...(isDevice ? { mode: 'Dialog' } : {}),
   };
   const pageSettings = { pageSize: 50 };
@@ -394,6 +343,7 @@ export default function Home() {
     const isValueArray = Array.isArray(value);
 
     // Single value -> update every record; array -> up to the array length only.
+
     const updateCount = isValueArray
         ? Math.min(value.length, records.length)
         : records.length;
@@ -453,8 +403,9 @@ export default function Home() {
 }
   const handleBulkUpdateOk = () => {
     const grid = gridRef.current;
-        if (!grid || !bulkUpdateField) return;
-    console.log(bulkUpdateField, bulkUpdateValue)
+
+    if (!grid || !bulkUpdateField) return;
+
     let selectedRecords = grid.getSelectedRecords();
     bulkCellUpdate(bulkUpdateField, bulkUpdateValue, selectedRecords);
     gridRef.current.freezeRefresh();
@@ -474,21 +425,32 @@ export default function Home() {
     if (!grid) return;
     if(excelFile === null)
     {
-       gridRef.current.changeDataSource(gridData, gridRef.current.getColumns());
+       gridRef.current.changeDataSource(gridData);
        return;
     }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const workbook = XLSX.read(event.target.result, { type: 'array', cellDates: true });
-      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const importedData = parseExcelSheet(firstSheet);
+     var reader = new FileReader();
+    reader.onload = (e) => {
+        var data = (e.target).result;
+        var workbook = XLSX.read(data, { type: 'array' });
+        workbook.SheetNames.forEach((sheetName) => {
+          var XL_row_object = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+          if (Array.isArray(XL_row_object) && XL_row_object.length > 0) {
 
-      grid.setProperties({ dataSource: importedData }, true);
-      grid.freezeRefresh()
+             grid.pinnedTopRowModels=[];
+              grid.pinnedTopRecords=[]
+
+              grid.pinnedTopRowKeys = {}
+              grid.pinnedRowIndexes = {}
+              grid.editSettings={};
+            gridRef.current.changeDataSource(XL_row_object);
+          } else {
+           
+          }
+        });
+      };
       setExcelFile(null);
       setIsExcelDialogOpen(false);
-    };
-    reader.readAsArrayBuffer(excelFile);
+      reader.readAsArrayBuffer(excelFile);
   };
 
   const handleExcelDialogCancel = () => {
@@ -505,21 +467,10 @@ export default function Home() {
     selectGridRef.current.freezeRefresh();
   };
 
-  const updateTotalRecordCount = () => {
-
-    const dataSource = gridRef.current?.dataSource;
-    const records = Array.isArray(dataSource)
-      ? dataSource
-      : dataSource?.json || dataSource?.result || [];
-    setTotalRecordCount(Array.isArray(records) ? records.length : 0);
-  };
-
   const path = {
     saveUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Save',
     removeUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Remove'
-  };
-  const dropElement = document.getElementsByClassName('control-fluid')[0];
-  const parseExcel = (file) => {
+  };  const parseExcel = (file) => {
     var reader = new FileReader();
     reader.onload = (e) => {
       var workbook = XLSX.read(e.target.result, { type: 'array', cellDates: true });
@@ -535,10 +486,10 @@ export default function Home() {
     if (files) {
       setExcelFile(files[0].rawFile);
     }
+    
 
   }
   const onRemove = (args) => {
-    console.log(args)
     setExcelFile(null);
    
   }
@@ -648,7 +599,27 @@ export default function Home() {
       </DialogComponent>
 
       <div className="total-record-count">
-        Total records: {totalRecordCount}
+        <button
+          onClick={() => {
+            setExcelFile(null);
+            setIsExcelDialogOpen(true);
+          }}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '4px 4px',
+            border: 'none',
+            borderRadius: '4px',
+            backgroundColor: 'transparent',
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: '500',
+          }}
+        >
+          <span className="e-icons e-export-xls" style={{ fontSize: '16px' }} />
+          <span>Bind from Excel</span>
+        </button>
       </div>
       <div className={`${isDevice ? ' e-bigger' : ''}`}>
       <GridComponent
@@ -656,25 +627,17 @@ export default function Home() {
         ref={gridRef}
         isRowPinned={(data)=>
         {
-          if(data && !isDevice && data.Priority === 'Critical' && data.PaymentStatus === 'Paid' && data.OrderStatus !== 'Delivered')
+          if(data && !isDevice && data.Priority === 'Critical' && data.PaymentStatus === 'Paid')
           {
             return true;
           }
           return false;
         }
         }
+
         dataSource={gridData}
-        dataBound={()=>
-          {
-            console.log('dataBound event triggered');
-            updateTotalRecordCount()
-          }
-        }
-        actionComplete={()=>
-          {
-              updateTotalRecordCount()
-          }
-        }
+
+
         columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending']}
 
         height={isDevice ? "400" : "200"}
@@ -687,7 +650,7 @@ export default function Home() {
         enableAdaptiveUI={isDevice}
         rowRenderingMode={isDevice ? 'Vertical' : 'Horizontal'}
         adaptiveUIMode={isDevice ? 'Mobile' : 'Both'}
-        allowGrouping={!isDevice}
+        // allowGrouping={!isDevice}
         groupSettings={groupSettings}
         allowReordering={!isDevice}
         allowResizing={!isDevice}
@@ -706,8 +669,8 @@ export default function Home() {
         allowPdfExport
         contextMenuItems={isDevice ? [] : [
           'AutoFit', 'SortAscending', 'SortDescending',
-          'Copy', 'Edit', 'Delete', 'Save', 'Cancel',
-          'Group', 'Ungroup', 'PinRow', 'UnpinRow', { id: 'bulkUpdate', text: 'Bulk Update' }
+          'Copy', 'Edit', 'Save', 'Cancel',
+          'Group', 'Ungroup',  { id: 'bulkUpdate', text: 'Bulk Update' }
         ]}
         contextMenuClick={contextMenuClick}
       >
@@ -718,6 +681,8 @@ export default function Home() {
             field="OrderID"
             width={180}
             isPrimaryKey={true}
+            textAlign={isDevice ? 'Left' : 'Right'}
+            headerTextAlign={'Right'}
             validationRules={{ required: true }}
           />
           <ColumnDirective
@@ -730,7 +695,7 @@ export default function Home() {
                 field: 'OrderStatus',
                 headerText: 'Order Status',
                 width: 170,
-                
+                validationRules: { required: true },
                 textAlign: 'Left',
                 editType: 'dropdownedit',
                 filterBarTemplate: orderStatusFilterTemplate,
@@ -741,6 +706,7 @@ export default function Home() {
                 headerTemplate: orderDateHeaderTemplate,
                 filter: { type: 'Menu' },
                 format: 'yMd',
+                validationRules: { required: true },
                 editType: 'datepickeredit',
                 visible:!isDevice,
                 type: 'date',
@@ -834,6 +800,7 @@ export default function Home() {
             field='ProductName'
             headerText='Product Name'
             width={250}
+            validationRules={{ required: true }}
             editType='dropdownedit'
 
           />
@@ -894,6 +861,7 @@ export default function Home() {
             field='Priority'
             headerText='Priority'
             width={130}
+            validationRules={{required: true}}
             editType={'dropdownedit'}
             filterBarTemplate={priorityFilterTemplate}
           />
@@ -914,6 +882,7 @@ export default function Home() {
             headerText='Payment Status'
             width={160}
             textAlign='Left'
+            validationRules={{required: true}}
             editType='dropdownedit'
             filterBarTemplate={paymentStatusFilterTemplate}
             disableHtmlEncode={true} />

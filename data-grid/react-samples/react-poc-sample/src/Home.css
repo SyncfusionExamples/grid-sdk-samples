@@ -39,6 +39,7 @@ body {
 }
 
 .total-record-count {
+  width: fit-content;
   margin-bottom: 6px;
   padding: 5px 12px;
   border: 1px solid #d9e2ec;
