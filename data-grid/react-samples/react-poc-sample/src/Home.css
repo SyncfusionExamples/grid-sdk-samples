@@ -10,6 +10,8 @@ body,
 
 body {
   font-family: 'Hanken Grotesk', sans-serif;
+  color: #243447;
+  background: #f3f6fa;
 }
 
 .home-page,
@@ -26,9 +28,28 @@ body {
 
 .home-grid-parent {
   width: min(1500px, calc(100% - 48px));
-  height: 500px;
+  min-height: 400px;
   margin: 24px auto;
+  padding: 16px;
+  border: 1px solid #dbe3ec;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px #1f293714;
   overflow: visible;
+}
+
+.total-record-count {
+  width: fit-content;
+  margin-bottom: 6px;
+  padding: 5px 12px;
+  border: 1px solid #d9e2ec;
+  border-radius: 4px;
+  background: #f8fafc;
+  color: #344054;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: left;
 }
 
 .top-actions {
