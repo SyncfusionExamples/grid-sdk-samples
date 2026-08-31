@@ -450,13 +450,8 @@ export default function Home() {
               'Group', 'Ungroup'
             ]
             
-           
-            
             gridRef.current.changeDataSource(XL_row_object);
-           
 
- 
-                        // grid.groupSettings={ columns: [] }
             
           } else {
            
