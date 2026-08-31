@@ -5,9 +5,9 @@ export default function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isGridActive = location.pathname === '/';
-    const isHomeActive = location.pathname === '/home';
-
+    const isGridActive = location.pathname === '/grid';
+    const isHomeActive = location.pathname === '/' || location.pathname === '/index.html' || location.pathname === '/home';
+    const isAdaptiveActive = location.pathname === '/adaptive';
     return (
         <nav className="navbar">
             <div className="navbar-container">
@@ -23,15 +23,14 @@ export default function Navbar() {
                     </button>
                     <button
                         className={`navbar-item ${isGridActive ? 'active' : ''}`}
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/grid')}
                     >
                         <span className="e-icons" style={{ marginRight: '6px' }}></span>
                         Status Grid
                     </button>
 
-
                     <button
-                        className={`navbar-item `}
+                        className={`navbar-item ${isAdaptiveActive ? 'active' : ''}`}
                         onClick={() => navigate('/adaptive')}
                     >
                         Adaptive Layout

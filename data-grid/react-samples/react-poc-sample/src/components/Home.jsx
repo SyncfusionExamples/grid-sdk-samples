@@ -124,6 +124,7 @@ export default function Home() {
   const [isExcelDialogOpen, setIsExcelDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [isSelectedRecordsDialogOpen, setIsSelectedRecordsDialogOpen] = useState(false);
+  const [totalRecordCount, setTotalRecordCount] = useState(gridData.length);
   const [selectedRecords, setSelectedRecords] = useState([]);
   const [isBatchEditMode, setIsBatchEditMode] = useState(false);
   const [dropElement, setDropElement] = useState(null);
@@ -224,7 +225,7 @@ export default function Home() {
   };
   const pageSettings = { pageSize: 50 };
 
-  const groupSettings = { showDropArea: false,showToggleButton:true, showGroupedColumn: true };
+  const groupSettings = { showDropArea: false, showGroupedColumn: true };
 
 
   const filterDate = (field, value) => {
@@ -441,8 +442,22 @@ export default function Home() {
 
               grid.pinnedTopRowKeys = {}
               grid.pinnedRowIndexes = {}
-              grid.editSettings={};
+  
+              grid.editSettings={allowEditing:false,allowAdding:false,allowDeleting:false};
+              grid.contextMenuItems=isDevice ? [] : [
+              'AutoFit', 'SortAscending', 'SortDescending',
+              'Copy', 'Edit', 'Save', 'Cancel',
+              'Group', 'Ungroup'
+            ]
+            
+           
+            
             gridRef.current.changeDataSource(XL_row_object);
+           
+
+ 
+                        // grid.groupSettings={ columns: [] }
+            
           } else {
            
           }
@@ -470,17 +485,7 @@ export default function Home() {
   const path = {
     saveUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Save',
     removeUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Remove'
-  };  const parseExcel = (file) => {
-    var reader = new FileReader();
-    reader.onload = (e) => {
-      var workbook = XLSX.read(e.target.result, { type: 'array', cellDates: true });
-      workbook.SheetNames.forEach((sheetName) => {
-        var importedData = parseExcelSheet(workbook.Sheets[sheetName]);
-        gridRef.current.changeDataSource(importedData, gridRef.current.getColumns());
-      });
-    };
-    reader.readAsArrayBuffer(file.rawFile);
-  };
+  }; 
   const onSuccess = (args) => {
     var files = args.file;
     if (files) {
@@ -650,7 +655,7 @@ export default function Home() {
         enableAdaptiveUI={isDevice}
         rowRenderingMode={isDevice ? 'Vertical' : 'Horizontal'}
         adaptiveUIMode={isDevice ? 'Mobile' : 'Both'}
-        // allowGrouping={!isDevice}
+        allowGrouping={!isDevice}
         groupSettings={groupSettings}
         allowReordering={!isDevice}
         allowResizing={!isDevice}
@@ -670,7 +675,7 @@ export default function Home() {
         contextMenuItems={isDevice ? [] : [
           'AutoFit', 'SortAscending', 'SortDescending',
           'Copy', 'Edit', 'Save', 'Cancel',
-          'Group', 'Ungroup',  { id: 'bulkUpdate', text: 'Bulk Update' }
+          'Group', 'Ungroup', { id: 'bulkUpdate', text: 'Bulk Update' }
         ]}
         contextMenuClick={contextMenuClick}
       >

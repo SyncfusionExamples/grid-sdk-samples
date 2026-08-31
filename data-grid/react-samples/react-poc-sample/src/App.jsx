@@ -15,9 +15,10 @@ function App() {
         <Navbar />
         <main className="app-main">
           <Routes>
-            <Route path="/" element={<Grid />} />
-            <Route path="/index.html" element={<Grid />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/index.html" element={<Home />} />
             <Route path="/home" element={<Home />} />
+            <Route path="/grid" element={<Grid />} />
             <Route path="/adaptive" element={<Adaptive />} />
           </Routes>
         </main>
