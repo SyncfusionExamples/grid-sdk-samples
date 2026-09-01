@@ -1,4 +1,3 @@
-import { Link } from 'react-router';
 import { useRef, useState, useEffect } from 'react';
 import {
   GridComponent,
@@ -27,15 +26,15 @@ import {
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
 import { DatePicker } from '@syncfusion/ej2-calendars';
-import { Browser, isNullOrUndefined,extend, setValue, getValue } from "@syncfusion/ej2-base";
-import { SwitchComponent } from '@syncfusion/ej2-react-buttons';
-import { NumericTextBoxComponent, TextBoxComponent, UploaderComponent } from '@syncfusion/ej2-react-inputs';
+import { Browser, isNullOrUndefined, extend, setValue, getValue } from '@syncfusion/ej2-base';
+import { TextBoxComponent, UploaderComponent } from '@syncfusion/ej2-react-inputs';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
 import { Query } from '@syncfusion/ej2-data';
 import * as XLSX from 'xlsx';
 
 import { gridData } from '../data/virtualData';
 
+// Creates a reusable header template with an icon and label.
 const createDecoratedHeader = (iconClass, label) => {
   return () => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -49,6 +48,7 @@ const customerNameHeaderTemplate = createDecoratedHeader('e-icons e-people', 'Cu
 const orderDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Order Date');
 const shippedDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-today', 'Ship Date');
 
+// Builds a date filter template that syncs the picker value to the grid filter.
 function createDateFilterTemplate(filterDate) {
   let dateElement;
 
@@ -67,6 +67,7 @@ function createDateFilterTemplate(filterDate) {
   };
 }
 
+// Builds a dropdown filter template with an optional "All" choice.
 function createDropdownFilterTemplate(filterValue, options) {
   let dropdownElement;
 
@@ -88,33 +89,7 @@ function createDropdownFilterTemplate(filterValue, options) {
   };
 }
 
-function parseExcelSheet(sheet) {
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: null });
-  const headerRowIndex = rows.findIndex((row) => row.includes('OrderID'));
-  if (headerRowIndex < 0) return [];
-
-  const fieldMap = {
-    OrderID: 'OrderID',
-    'Order Status': 'OrderStatus',
-    OrderDate: 'OrderDate',
-    Name: 'CustomerName',
-    Phone: 'Phone',
-    'Ship Details': 'ShipDetails',
-    'Ship Country': 'ShipCountry',
-    'Ship Date': 'ShipDate',
-    'Ship Fee': 'ShipFee',
-  };
-  const headers = rows[headerRowIndex].map((header) => fieldMap[header] || header);
-
-  return rows.slice(headerRowIndex + 1).filter((row) => row.some(Boolean)).map((row) => {
-    return headers.reduce((record, field, index) => {
-      if (field) record[field] = row[index];
-      return record;
-    }, {});
-  });
-}
-
-
+// Main grid page component that wires dialogs, filters, uploads, and grid actions.
 export default function Home() {
   const gridRef = useRef(null);
   const selectGridRef = useRef(null);
@@ -124,12 +99,9 @@ export default function Home() {
   const [isExcelDialogOpen, setIsExcelDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [isSelectedRecordsDialogOpen, setIsSelectedRecordsDialogOpen] = useState(false);
-  const [totalRecordCount, setTotalRecordCount] = useState(gridData.length);
-  const [selectedRecords, setSelectedRecords] = useState([]);
-  const [isBatchEditMode, setIsBatchEditMode] = useState(false);
   const [dropElement, setDropElement] = useState(null);
 
-  // Initialize dropElement after component mounts
+  // Capture the upload drop area once the component is mounted.
   useEffect(() => {
     const element = document.getElementsByClassName('control-fluid')[0];
     setDropElement(element || null);
@@ -146,11 +118,7 @@ export default function Home() {
     { text: 'Payment Status', value: 'PaymentStatus' },
   ];
 
-  // Settings state
-
-  const [selectionMode, setSelectionMode] = useState('Row');
-
-  // Row height mapping
+  // Row height presets used by the toolbar actions.
   const rowHeightMap = {
     compact: 32,
     relaxed: 55,
@@ -158,21 +126,9 @@ export default function Home() {
   };
 
   const isDevice = Browser.isDevice;
-  const handleEditModeChange = (args) => {
-    const mode = args.checked ? 'Batch' : 'Normal';
-    setIsBatchEditMode(args.checked);
-    if (gridRef.current) {
-      gridRef.current.editSettings.mode = mode;
-    }
-  };
 
-  const editModeToolbarTemplate = () => (
-    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0 8px' }}>
-      <span>Batch Edit</span>
-      <SwitchComponent checked={isBatchEditMode} change={handleEditModeChange} />
-    </div>
-  );
 
+  // Configure the toolbar based on device form factor.
   const toolbar = isDevice ? ['Add', 'Edit', 'Update', 'Cancel', 'ExcelExport',
     { tooltipText: 'View Selected Records', id: 'viewSelectedRecords', prefixIcon: 'e-icons e-eye' }, 'PdfExport'] : [
     'Add',
@@ -214,6 +170,7 @@ export default function Home() {
   ];
 
 
+  // Shared grid behavior settings.
   const filterSettings = { type: 'FilterBar', showFilterBarOperator: true, };
   const selectionSettings = { type: 'Multiple', mode: 'Row', persistSelection: true };
   const sortSettings = { columns: [] };
@@ -228,6 +185,7 @@ export default function Home() {
   const groupSettings = { showDropArea: false, showGroupedColumn: true };
 
 
+  // Apply or remove a date filter for a specific grid column.
   const filterDate = (field, value) => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -239,6 +197,7 @@ export default function Home() {
     }
   };
 
+  // Apply or remove a dropdown filter for a specific grid column.
   const filterValue = (field, value) => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -250,6 +209,7 @@ export default function Home() {
     }
   };
 
+  // filterBarTemplates settings
   const orderDateFilterTemplate = createDateFilterTemplate(filterDate);
   const shipDateFilterTemplate = createDateFilterTemplate(filterDate);
   const shipCountryFilterTemplate = createDropdownFilterTemplate(filterValue, ['USA', 'Canada', 'Mexico', 'UK']);
@@ -257,6 +217,7 @@ export default function Home() {
   const priorityFilterTemplate = createDropdownFilterTemplate(filterValue, ['Low', 'Medium', 'High', 'Critical']);
   const paymentStatusFilterTemplate = createDropdownFilterTemplate(filterValue, ['Paid', 'Pending', 'Refunded']);
 
+  // Handle all toolbar button actions for the grid.
   const toolbarClick = (args) => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -307,11 +268,8 @@ export default function Home() {
         break;
     }
   };
-  const gridCreated = (args) => {
-    if (Browser.isDevice) {
-      gridRef.current.hideColumns(['Total Amount', 'Tax Amount', 'Discount Amount', 'Product Name', 'Gross Amount', 'Name', 'Phone', 'Ship Fee', 'Ship Date', 'Ship Country', 'Ship Details'])
-    }
-  }
+
+  // Open the bulk update dialog from the context menu.
   const contextMenuClick = (args) => {
     if (args.item.id === 'bulkUpdate') {
       setBulkUpdateField('');
@@ -320,6 +278,7 @@ export default function Home() {
     }
   };
 
+  // Apply a single value or value array to multiple selected grid rows.
   const bulkCellUpdate = (
     field,
     value,
@@ -402,6 +361,8 @@ export default function Home() {
     // Persist the batch of changes through the data module.
     gridRef.current.getDataModule().saveChanges(changes, pkName, original);
 }
+
+  // Confirm and apply the bulk update dialog values.
   const handleBulkUpdateOk = () => {
     const grid = gridRef.current;
 
@@ -414,13 +375,14 @@ export default function Home() {
 
   };
 
+  // Close the bulk update dialog without saving changes.
   const handleBulkUpdateCancel = () => {
     setBulkUpdateField('');
     setBulkUpdateValue('');
     setIsBulkUpdateOpen(false);
   };
 
-
+  // Load grid data from the selected Excel file.
   const handleExcelBind = () => {
     const grid = gridRef.current;
     if (!grid) return;
@@ -451,8 +413,8 @@ export default function Home() {
             ]
             
             gridRef.current.changeDataSource(XL_row_object);
-
-            
+           
+    
           } else {
            
           }
@@ -463,32 +425,38 @@ export default function Home() {
       reader.readAsArrayBuffer(excelFile);
   };
 
+  // Close the Excel import dialog and clear the pending file.
   const handleExcelDialogCancel = () => {
     setExcelFile(null);
     setIsExcelDialogOpen(false);
   };
 
+  // Hide the selected-records dialog.
   const handleSelectedRecordsDialogClose = () => {
     setIsSelectedRecordsDialogOpen(false);
   };
 
+  // Populate the selected-records grid before the dialog opens.
   const handleSelectedRecordsDialogOpen = () => {
     selectGridRef.current.setProperties({ dataSource: gridRef.current.getSelectedRecords() }, true);
     selectGridRef.current.freezeRefresh();
   };
 
-  const path = {
+  // Configure the uploader.
+   const path = {
     saveUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Save',
     removeUrl: 'https://services.syncfusion.com/react/production/api/FileUploader/Remove'
   }; 
+
+  // Store the uploaded Excel file when upload succeeds.
   const onSuccess = (args) => {
     var files = args.file;
     if (files) {
-      setExcelFile(files[0].rawFile);
+      setExcelFile(files.rawFile);
     }
-    
-
   }
+
+  // Clear the stored Excel file when the upload is removed.
   const onRemove = (args) => {
     setExcelFile(null);
    
@@ -538,7 +506,7 @@ export default function Home() {
         visible={isExcelDialogOpen}
         content={() => {
           return (
-            <UploaderComponent asyncSettings={path} removing={onRemove} dropArea={dropElement} change={onSuccess}></UploaderComponent>)
+            <UploaderComponent id="uploadFiles" asyncSettings={path} removing={onRemove} dropArea={dropElement} success={onSuccess} ></UploaderComponent>)
         }
         }
         showCloseIcon
@@ -573,7 +541,7 @@ export default function Home() {
           return <div>
             <GridComponent
               ref={selectGridRef}
-              dataSource={selectedRecords}
+              dataSource={[]}
               height={isDevice ? '260' : '320'}
               width="100%"
             >
@@ -586,6 +554,7 @@ export default function Home() {
                 <ColumnDirective field="ShipDate" headerText="Ship Date" type="date" format="yMd" width="130" />
                 <ColumnDirective field="TotalAmount" headerText="Total Amount" format="C2" textAlign="Right" width="140" />
               </ColumnsDirective>
+              
             </GridComponent></div>
           
         }}
@@ -634,12 +603,8 @@ export default function Home() {
           return false;
         }
         }
-
         dataSource={gridData}
-
-
         columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending']}
-
         height={isDevice ? "400" : "200"}
         width="100%"
         rowHeight={isDevice ? undefined : rowHeightMap.normal}

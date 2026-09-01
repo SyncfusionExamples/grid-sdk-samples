@@ -1,18 +1,12 @@
-import { createRoot } from 'react-dom/client';
-
 import * as React from 'react';
 import { GridComponent, ColumnsDirective, ColumnDirective, Inject, Filter, Sort, Group, Edit, Resize, Toolbar, Aggregate, Page, ExcelExport, PdfExport, ColumnChooser, ColumnMenu, InfiniteScroll } from '@syncfusion/ej2-react-grids';
-import { AggregateColumnsDirective, AggregateColumnDirective, AggregateDirective, AggregatesDirective } from '@syncfusion/ej2-react-grids';
-import { CheckBoxComponent } from '@syncfusion/ej2-react-buttons';
 import { Browser } from "@syncfusion/ej2-base";
-import { gridData } from '../data/virtualData'
+import { gridData } from '../data/virtualData';
 
-import { PropertyPane } from './property-pane';
-
-// custom code end
+// Adaptive grid demo page.
 function Adaptive() {
 
-    // custom code start
+    // Inline styles for the mobile device preview.
     const SAMPLE_CSS = `
   .e-bigger.e-responsive-dialog .e-dlg-content {
     padding: 16px;
@@ -97,26 +91,15 @@ function Adaptive() {
       border-bottom-width: 60px;
       box-shadow: -1px 2px white, -2px -2px white, 2px -2px white, 2px 1px white;
   }`;
+    // Grid instance used by the toolbar actions.
     let grid;
-    let checkboxObj;
     const toolbarOptions = ['Add', 'Edit', 'Delete', 'Update', 'Cancel', 'Search', 'ColumnChooser', 'ExcelExport'];
     const renderingMode = 'Vertical';
     const editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog' };
     const groupOptions = { showGroupedColumn: true };
-    const validationRule = { required: true };
-    const orderidRules = { required: true, number: true };
     const filterOptions = { type: 'Excel' };
-    function onChange(e) {
-        grid.rowRenderingMode = e.checked ? 'Horizontal' : 'Vertical';
-        grid.allowGrouping = e.checked;
-    }
-    ;
-    function footerSum(props) {
-        return (<span>Sum: {props.Sum}</span>);
-    }
-    function footerAvg(props) {
-        return (<span>Average: {props.Average}</span>);
-    }
+
+    // Set the adaptive dialog target and pager styling during grid load.
     function load() {
         this.adaptiveDlgTarget = document.getElementsByClassName('e-mobile-content')[0];
         if (this.pageSettings.pageSizes) {
@@ -126,6 +109,8 @@ function Adaptive() {
             document.querySelector('.e-adaptive-demo')?.classList.remove('e-pager-pagesizes');
         }
     }
+
+    // Trigger grid export actions from toolbar commands.
     function toolbarClick(args) {
         switch (args.item.id) {
             case grid.element.id + '_pdfexport':
@@ -142,11 +127,13 @@ function Adaptive() {
                 {SAMPLE_CSS}
             </style>
             <div className="adaptive-grid-column col-md-9 e-bigger e-adaptive-demo">
+                {/* Show the mobile device shell on desktop and the grid directly on devices. */}
                 {!Browser.isDevice ? (<div className="e-mobile-layout">
                     <div className="e-mobile-content">
                         <GridComponent id="adaptivebrowser" editSettings={editSettings} dataSource={gridData} height='350px' ref={(g) => { grid = g; }} enableAdaptiveUI={true} rowRenderingMode={renderingMode} allowFiltering={true} allowSorting={true} allowGrouping={false} showColumnChooser={true} showColumnMenu={true} enableInfiniteScrolling={true} groupSettings={groupOptions} filterSettings={filterOptions} toolbar={toolbarOptions} pageSettings={{ pageCount: 3, pageSizes: true }} load={load} toolbarClick={toolbarClick} allowExcelExport={true} allowPdfExport={true}>
                             <ColumnsDirective>
-                                {/* --------- Stacked header: Order Info --------- */}
+                                {/* Column definitions for the adaptive grid. */}
+                                {/* Primary order identifier column. */}
                                 <ColumnDirective
                                     headerText="OrderID"
                                     field="OrderID"
@@ -154,6 +141,7 @@ function Adaptive() {
                                     isPrimaryKey={true}
                                     validationRules={{ required: true }}
                                 />
+                                {/* Editable order status column. */}
                                 <ColumnDirective
                                     headerText="Order Info"
                                     editType='dropdownedit'
@@ -162,7 +150,7 @@ function Adaptive() {
                                 />
 
 
-                                {/* --------- Stacked header: Customer Info --------- */}
+                                {/* Customer name column. */}
                                 <ColumnDirective
                                     headerText="Customer"
                                     width={150}
@@ -170,7 +158,7 @@ function Adaptive() {
 
                                 />
 
-                                {/* --------- Stacked header: Shipping --------- */}
+                                {/* Shipping country column. */}
                                 <ColumnDirective
                                     headerText="ShipCountry"
                                     field="ShipCountry"
@@ -178,6 +166,7 @@ function Adaptive() {
 
 
                                 />
+                                {/* Shipping date column. */}
                                 <ColumnDirective
                                     headerText="ShipDate"
                                     field="ShipDate"
