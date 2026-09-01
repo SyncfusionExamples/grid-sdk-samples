@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import {
   GridComponent,
   ColumnsDirective,
@@ -23,11 +23,10 @@ import {
   ColumnMenu,
   InfiniteScroll,
 } from '@syncfusion/ej2-react-grids';
-import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
-import { NumericTextBoxComponent, TextBoxComponent } from '@syncfusion/ej2-react-inputs';
+import { TextBoxComponent, NumericTextBoxComponent } from '@syncfusion/ej2-react-inputs';
+import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { Query } from '@syncfusion/ej2-data';
-
 import { gridData } from '../data/virtualData';
 
 
@@ -65,42 +64,6 @@ function shippedDateHeaderTemplate() {
 
 
 
-
-function freightHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-money" aria-hidden="true" />
-      <span>Freight</span>
-    </div>
-  );
-}
-
-function statusHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-bolt" aria-hidden="true" />
-      <span>Status</span>
-    </div>
-  );
-}
-
-function priorityHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-icons e-circle-check e-icons" aria-hidden="true" />
-      <span>Priority</span>
-    </div>
-  );
-}
-
-function verifiedHeaderTemplate() {
-  return (
-    <div>
-      <span className="e-circle-check e-icons" aria-hidden="true" />
-      <span>Verified</span>
-    </div>
-  );
-}
 
 /* --------------------------------------------------------
  * Status, Priority & Payment visual configuration
@@ -141,13 +104,7 @@ const avatarPalette = [
 const getInitials = (name = '') =>
   name.split(' ').filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join('');
 
-/* Shared reset applied to every template's outer wrapper.
- * The grid sets a line-height on .e-rowcell equal to the active rowHeight
- * (e.g. 28 / 40 / 52px). Inline text inherits that line-height, so a single
- * <span> can end up as tall as the whole row — stacking two of them (name +
- * email) then overlaps into the next row. Resetting line-height to 'normal'
- * and controlling height explicitly on each badge/wrapper fixes both the
- * overlap and the inconsistent pill sizing. */
+
 const cellReset = { lineHeight: 'normal' };
 
 /* Order status template — plain text + icon, no background fill */
@@ -479,13 +436,9 @@ function EditDialogTemplate(props) {
  * Main Grid Component
  * ----------------------------------------------------- */
 export default function Grid() {
-  var scrollNextSet = false;
+
   const gridRef = useRef(null);
-  const dropRef = useRef(null);
   const seconGridRef = useRef(null);
-  // Settings state
-  const [rowHeight, setRowHeight] = useState('normal');
-  const [selectionMode, setSelectionMode] = useState('Row');
 
   // Row height mapping
   const rowHeightMap = {
@@ -496,65 +449,18 @@ export default function Grid() {
   const secondGridQuery = new Query().where('OrderStatus', 'equal', 'Delivered')
   const firstGridQuery = new Query().where('OrderStatus', 'notequal', 'Delivered')
 
-  // Dropdown data
-  const rowHeightData = [
-    { text: 'Small', value: 'compact' },
-    { text: 'Medium', value: 'normal' },
-    { text: 'Large', value: 'relaxed' },
-
-  ];
-
-
-  // Handlers
-  const onRowHeightChange = (e) => {
-
-    gridRef.current.setProperties({ rowHeight: rowHeightMap[e.value] }, true)
-
-    gridRef.current.freezeRefresh();
-
-
-  };
-
-  const onSelectionModeChange = (e) => {
-    setSelectionMode(e.value);
-  };
-
-  const onDataCountChange = (e) => {
-    setDataCount(e.value);
-    setDataSource(makeData(e.value));
-  };
-  const rowHeightTemplate = () => (
-    <div>
-      <label>Row Height:    </label>
-
-      <DropDownListComponent
-        ref={dropRef}
-        dataSource={rowHeightData}
-        fields={{ text: 'text', value: 'value' }}
-        // value={}
-        change={onRowHeightChange}
-      />
-    </div>
-  );
-
   const toolbar = [
     'Edit',
     'Delete',
     'Update',
     'Cancel',
-    { type: 'Separator' },
-
   ];
 
-
-
   const filterSettings = { type: 'Excel' };
-  const selectionSettings = { type: 'Multiple', mode: selectionMode, persistSelection: true };
+  const selectionSettings = { type: 'Multiple', mode: 'Row', persistSelection: true };
   const sortSettings = { columns: [] };
   const editSettings = { allowEditing: true, allowAdding: true, allowDeleting: true, mode: 'Dialog', template: EditDialogTemplate };
   const pageSettings = { pageSize: 50 };
-
-  
 
   const toolbarClick = (args) => {
     const grid = gridRef.current;
@@ -581,8 +487,6 @@ export default function Grid() {
     }
   };
 
-
-  // const [scrollNextset,setscrollNextset]=
 
   return (
     <div
@@ -811,7 +715,6 @@ export default function Grid() {
           sortSettings={sortSettings}
           pageSettings={{ pageSize: 12 }}
 
-          // allowRowDragAndDrop
           allowPaging={true}
 
           allowExcelExport
@@ -920,7 +823,6 @@ export default function Grid() {
               textAlign='Center'
               freeze={'Right'}
             />
-
 
           </ColumnsDirective>
 

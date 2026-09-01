@@ -5,4 +5,8 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: command === 'build' ? '/CustomDemos/868499/' : '/',
+  server: {
+    middlewareMode: false,
+    historyApiFallback: true,
+  },
 }))
