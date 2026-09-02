@@ -52,6 +52,7 @@ const shippedDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-toda
 // Main grid page component that wires dialogs, filters, uploads, and grid actions.
 export default function Home() {
   const gridRef = useRef(null);
+  const fieldFocusRef = useRef(null);
   const selectGridRef = useRef(null);
   const [isBulkUpdateOpen, setIsBulkUpdateOpen] = useState(false);
   const [bulkUpdateField, setBulkUpdateField] = useState('');
@@ -622,7 +623,23 @@ export default function Home() {
           allowReordering={!isDevice}
           allowResizing={!isDevice}
           showColumnMenu={!isDevice}
+          recordDoubleClick={(args) => {
+            const nextField = args?.column?.field ?? null;
+            fieldFocusRef.current = nextField;
+          }}
+          actionComplete={(args) => {
+            const focusedField = fieldFocusRef.current ?? gridRef.current?.getColumns()?.[0]?.field;
+            if (args.requestType === 'beginEdit' && focusedField) {
+              const elementId = gridRef.current?.element?.id;
+              const fieldElement = args.form?.elements?.[`${elementId}${focusedField}`];
 
+              if (fieldElement) {
+                fieldElement.focus();
+              }
+              fieldFocusRef.current = null;
+
+            }
+          }}
           allowSelection
           selectionSettings={selectionSettings}
           editSettings={editSettings}
@@ -662,7 +679,6 @@ export default function Home() {
                   field: 'OrderStatus',
                   headerText: 'Order Status',
                   width: 170,
-                  validationRules: { required: true },
                   textAlign: 'Left',
                   editType: 'dropdownedit',
                   filterBarTemplate: orderStatusFilterTemplate,
