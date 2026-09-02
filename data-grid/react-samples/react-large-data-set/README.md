@@ -16,7 +16,6 @@ When the selected value changes:
 
 - Remote data binding using `DataManager` and `UrlAdaptor`
 - Dynamic query parameter update
-- DropDownList-driven data range selection
 - Virtual scrolling
 - DOM virtualization
 - Sorting
