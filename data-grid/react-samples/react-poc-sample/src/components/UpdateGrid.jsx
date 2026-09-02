@@ -57,9 +57,6 @@ export default function UpdateGrid() {
   const selectGridRef = useRef(null);
 
   const fieldFocusRef = useRef(null);
-  const [isBulkUpdateOpen, setIsBulkUpdateOpen] = useState(false);
-  const [bulkUpdateField, setBulkUpdateField] = useState('');
-  const [bulkUpdateValue, setBulkUpdateValue] = useState('');
   const [isExcelDialogOpen, setIsExcelDialogOpen] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [isSelectedRecordsDialogOpen, setIsSelectedRecordsDialogOpen] = useState(false);
@@ -328,9 +325,25 @@ export default function UpdateGrid() {
 
   const accordionSections = useCallback(() => {
     const columns = gridRef.current?.getColumns?.() || [];
+    const selectedRecords = gridRef.current?.getSelectedRecords?.() ?? [];
+    const isMultiSelection = selectedRecords.length > 1;
+    const shipDetailValues = selectedRecords
+      .map((record) => record?.ShipDetails)
+      .filter((value) => value !== undefined && value !== null && value !== '');
+    const hasSameShipDetails = selectedRecords.length > 1 && shipDetailValues.length > 0 && shipDetailValues.every((value) => value === shipDetailValues[0]);
+
     const validColumns = columns.filter((column) => {
       const field = column?.field;
-      if (!field || column?.isPrimaryKey || column?.allowEditing === false) return false;
+      if (!field || column?.isPrimaryKey || field === 'OrderDate' || column?.allowEditing === false) return false;
+
+      if (isMultiSelection && ['GrossAmount', 'DiscountAmount', 'TaxAmount', 'TotalAmount'].includes(field)) {
+        return false;
+      }
+
+      if (isMultiSelection && field === 'ShipDetails' && !hasSameShipDetails) {
+        return false;
+      }
+
       return true;
     });
 
@@ -1129,20 +1142,29 @@ export default function UpdateGrid() {
         </GridComponent>
 
         {!isDevice && selectedRowData && (
-          <div style={{ minWidth: 0, border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px', background: '#fff', minHeight: '200px', overflow: 'auto' }}>
-            <div style={{ fontWeight: 600, marginBottom: '12px' }}>Selected Row Details</div>
-            <AccordionComponent width="100%" height={450} expandMode={'Multiple'} className="selected-row-accordion">
-              <AccordionItemsDirective>
-                {accordionSections().map((section) => (
-                  <AccordionItemDirective
-                    key={section.title}
-                    header={section.title}
-                    expanded={true}
-                    content={section.content}
-                  />
-                ))}
-              </AccordionItemsDirective>
-            </AccordionComponent>
+          <div
+            style={{
+              minWidth: 0,
+              borderLeft: '2px solid black',
+              paddingLeft: '16px',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div style={{ minWidth: 0, border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px 12px 12px 16px', background: '#fff', minHeight: '200px', overflow: 'auto', boxSizing: 'border-box' }}>
+              <div style={{ fontWeight: 600, marginBottom: '12px' }}>Selected Row Details</div>
+              <AccordionComponent width="100%" height={425} expandMode={'Multiple'} >
+                <AccordionItemsDirective>
+                  {accordionSections().map((section) => (
+                    <AccordionItemDirective
+                      key={section.title}
+                      header={section.title}
+                      expanded={true}
+                      content={section.content}
+                    />
+                  ))}
+                </AccordionItemsDirective>
+              </AccordionComponent>
+            </div>
           </div>
         )}
       </div>
