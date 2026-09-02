@@ -1,15 +1,20 @@
 # React Syncfusion Data Grid Sample
 
-A comprehensive React application built with **Syncfusion React Data Grid** and **React Router** that demonstrates advanced grid capabilities and responsive layouts. This project showcases multiple pages with interactive grid components, adaptive mobile-friendly views, and a home landing page.
+A comprehensive React application built with **Syncfusion React Data Grid** and **React Router** that demonstrates advanced grid capabilities, Excel import, selected-records views, and responsive layouts.
 
 ## Overview
 
-This application is a multi-page React sample that demonstrates the features of the Syncfusion React Data Grid component. It includes:
+The **Order Tracking Status Grid** provides an interactive interface for managing and tracking customer orders across different stages of fulfillment.
 
-  **Orders Grid** - Displays all orders and their complete status.
+The application consists of:
+
+- **Orders Grid** - Displays all orders and their complete status.
 - **Order Pending Grid** - Displays pending orders with virtual scrolling.
 - **Order Delivered Grid** - Displays delivered orders with paging and row reordering.
 - **Adaptive Grid View** - Mobile-friendly grid layout optimized for smaller screens.
+- **Update Grid View** - Advanced grid page with Excel binding, selected-record details, and bulk update support.
+
+All grids remain synchronized, ensuring status updates are reflected consistently throughout the application.
 
 The application uses React Router for navigation and Syncfusion Tailwind 3 theming for visual styling.
 
@@ -28,6 +33,7 @@ The application uses React Router for navigation and Syncfusion Tailwind 3 themi
   - Dropdowns
   - Inputs (TextBox, NumericTextBox, Uploader)
   - Popups (Dialog)
+  - Navigations (Accordion)
   - Query Builder
 - **Tailwind CSS Theme** (@syncfusion/ej2-tailwind3-theme v34.2.2)
 - **XLSX** (v0.18.5) - For Excel file handling
@@ -49,6 +55,7 @@ The Grid component displays comprehensive order tracking data with the following
 #### Data Display Features
 
 - **Multi-Column Layout** - Displays customer names, order dates, shipping dates, and more
+- **Stacked Headers** - Groups related columns under shared headers
 - **Column Templates** - Custom header templates with icons
 - **Column Freezing** - Freeze important columns for easier navigation
 - **Column Reordering** - Drag columns to reorder them
@@ -67,10 +74,12 @@ The Grid component displays comprehensive order tracking data with the following
 - **Selection** - Select rows for bulk operations
 - **Row Drag and Drop** - Reorder rows by dragging
 - **Context Menu** - Right-click menu for row actions
+- **Adaptive UI** - Mobile-friendly editing and layout behavior
 
 #### Editing & Export Features
 
 - **Inline Editing** - Edit cell values directly in the grid
+- **Dialog Editing** - Responsive editing mode on mobile devices
 - **Toolbar Actions** - Quick actions via toolbar buttons
 - **Excel Export** - Export grid data to Excel format
 - **PDF Export** - Export grid data to PDF format
@@ -81,21 +90,21 @@ The Grid component displays comprehensive order tracking data with the following
 
 The application supports binding grid data from external Excel files:
 - Upload Excel files directly through the UI
-- Parse multi-sheet Excel workbooks using XLSX library
-- Automatically map Excel columns to grid columns
-- Populate the grid with data from Excel sheets
-- Support for complex Excel structures with automatic conversion
+- Parse multi-sheet Excel workbooks using the XLSX library
+- Replace the current grid data source with imported Excel data
+- Restore the default sample data when no file is selected
+- Clear pinned rows and internal row indexes before rebinding
 
-**Use Case**: Quickly import customer orders or data sets from Excel files into the grid for analysis and management.
+**Use Case**: Quickly import customer orders or other data sets from Excel files into the grid for analysis and management.
 
 #### View Selected Records
 
 View and manage selected grid records in an isolated view:
 - Display only the selected rows in a separate dialog window
-- Preserve column configuration from the main grid
-- Bulk operations on selected records
-- Context menu for quick access
-- Row selection persistence across interactions
+- Preserve the main grid column configuration in the selected-records grid
+- Show selected row details in a side panel on larger screens
+- Use an accordion layout to group editable fields by category
+- Keep selected record values synchronized across updates
 
 **Use Case**: Focus on a subset of records for detailed review, bulk updates, or reporting without affecting the main grid view.
 
@@ -103,17 +112,16 @@ View and manage selected grid records in an isolated view:
 
 Apply changes to multiple selected records simultaneously:
 - Select one or more rows in the grid
-- Open the context menu and choose bulk update
-- Select the field to update and provide the new value
+- Update a chosen field using dropdown, date, number, or text controls
 - Apply the change to all selected records at once
-- Automatic persistence of changes through the data module
 
-**Use Case**: Quickly update order status, payment information, or other fields for multiple records in one operation.
+
+**Use Case**: Quickly update order status, shipping details, payment information, or other fields for multiple records in one operation.
 
 #### Custom Filtering
 
 Advanced filtering options with custom templates:
-- **Date Filtering** - Filter by specific dates using date picker
+- **Date Filtering** - Filter by specific dates using a date picker
 - **Dropdown Filtering** - Pre-defined value filters for status fields
 - **Filter Bar Operators** - Advanced comparison operators for filtering
 - **Clear All Filters** - Reset all active filters with one click
@@ -206,8 +214,57 @@ Comprehensive demonstration of Syncfusion Grid capabilities with:
 - Rich data set with multiple columns
 - Decorated header templates with icons
 - Status-based visual configurations
-- Multiple synchronized grid views if needed
 - Export and editing capabilities
+
+### UpdateGrid Component
+
+Advanced grid workflow page featuring:
+- Excel binding through file upload and workbook parsing
+- A selected-records dialog for focused review
+- A side panel that shows editable selected-row details
+- Accordion-based field grouping for quick editing
+- Bulk updates across selected rows
+- Responsive dialog behavior for mobile and desktop layouts
+
+#### Accordion Implementation
+
+The `updateGrid` page uses the Syncfusion Accordion component to organize selected-row fields into logical groups and make the editing panel easier to scan.
+
+**How it works:**
+
+1. **Collect grid columns dynamically**
+   - The component reads the current grid columns from `gridRef.current.getColumns()`.
+   - It filters out invalid columns, primary-key columns, and non-editable columns.
+   - This keeps the accordion in sync with the actual grid definition.
+
+2. **Group fields into sections**
+   - Columns are grouped by field name into categories such as:
+     - **Order**
+     - **Shipping**
+     - **Customer**
+     - **General**
+   - The grouping logic uses field-name patterns to decide where each column belongs.
+
+3. **Build field controls by type**
+   - Each field is rendered with a control that matches its edit type:
+     - `DropDownListComponent` for dropdown fields
+     - `NumericTextBoxComponent` for numeric fields
+     - `DatePickerComponent` for date fields
+     - `TextBoxComponent` for text fields
+   - Labels are shown beside the inputs to keep the layout compact and readable.
+
+4. **Render accordion items**
+   - Each group becomes an accordion section.
+   - The section content is generated from the grouped fields.
+   - All sections are expanded by default so users can review data immediately.
+
+5. **Sync the selected record state**
+   - When a row is selected, the component merges selected-record values into a single `selectedRowData` object.
+   - If values differ across multiple selected rows, the field is shown as empty.
+   - When a field changes, the bulk update logic applies the value back to the selected record(s).
+
+**Result:**
+The accordion acts as a structured editor for the selected records panel, helping users update related fields without navigating a flat list of inputs.
 
 ### Adaptive Component
 

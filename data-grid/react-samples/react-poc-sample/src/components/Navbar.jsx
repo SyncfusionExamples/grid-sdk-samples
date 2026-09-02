@@ -8,6 +8,7 @@ export default function Navbar() {
     const isGridActive = location.pathname === '/grid';
     const isHomeActive = location.pathname === '/' || location.pathname === '/index.html' || location.pathname === '/home';
     const isAdaptiveActive = location.pathname === '/adaptive';
+    const isUpdateGridActive = location.pathname === '/update-grid';
     return (
         <nav className="navbar">
             <div className="navbar-container">
@@ -34,6 +35,13 @@ export default function Navbar() {
                         onClick={() => navigate('/adaptive')}
                     >
                         Adaptive Layout
+                    </button>
+
+                    <button
+                        className={`navbar-item ${isUpdateGridActive ? 'active' : ''}`}
+                        onClick={() => navigate('/update-grid')}
+                    >
+                        Update Grid
                     </button>
                 </div>
             </div>

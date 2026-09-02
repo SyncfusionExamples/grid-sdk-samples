@@ -824,6 +824,7 @@ export default function Grid() {
               freeze={'Right'}
             />
 
+
           </ColumnsDirective>
 
           <Inject
