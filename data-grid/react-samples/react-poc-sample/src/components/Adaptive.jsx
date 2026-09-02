@@ -130,7 +130,7 @@ function Adaptive() {
                 {/* Show the mobile device shell on desktop and the grid directly on devices. */}
                 {!Browser.isDevice ? (<div className="e-mobile-layout">
                     <div className="e-mobile-content">
-                        <GridComponent id="adaptivebrowser" editSettings={editSettings} dataSource={gridData} height='350px' ref={(g) => { grid = g; }} enableAdaptiveUI={true} rowRenderingMode={renderingMode} allowFiltering={true} allowSorting={true} allowGrouping={false} showColumnChooser={true} showColumnMenu={true} enableInfiniteScrolling={true} groupSettings={groupOptions} filterSettings={filterOptions} toolbar={toolbarOptions} pageSettings={{ pageCount: 3, pageSizes: true }} load={load} toolbarClick={toolbarClick} allowExcelExport={true} allowPdfExport={true}>
+                        <GridComponent id="adaptivebrowser" editSettings={editSettings} dataSource={gridData} height='400px' ref={(g) => { grid = g; }} enableAdaptiveUI={true} rowRenderingMode={renderingMode} allowFiltering={true} allowSorting={true} allowGrouping={false} showColumnChooser={true} showColumnMenu={true} enableInfiniteScrolling={true} groupSettings={groupOptions} filterSettings={filterOptions} toolbar={toolbarOptions} pageSettings={{ pageCount: 3, pageSizes: true }} load={load} toolbarClick={toolbarClick} allowExcelExport={true} allowPdfExport={true}>
                             <ColumnsDirective>
                                 {/* Column definitions for the adaptive grid. */}
                                 {/* Primary order identifier column. */}

@@ -25,11 +25,13 @@ import {
 } from '@syncfusion/ej2-react-grids';
 import { DropDownListComponent } from '@syncfusion/ej2-react-dropdowns';
 import { DropDownList } from '@syncfusion/ej2-dropdowns';
+import { DatePickerComponent } from '@syncfusion/ej2-react-calendars';
 import { DatePicker } from '@syncfusion/ej2-calendars';
 import { Browser, isNullOrUndefined, extend, setValue, getValue } from '@syncfusion/ej2-base';
-import { TextBoxComponent, UploaderComponent } from '@syncfusion/ej2-react-inputs';
+import { TextBoxComponent, UploaderComponent, NumericTextBoxComponent } from '@syncfusion/ej2-react-inputs';
 import { DialogComponent } from '@syncfusion/ej2-react-popups';
-import { Query } from '@syncfusion/ej2-data';
+import { AccordionComponent, AccordionItemDirective, AccordionItemsDirective } from '@syncfusion/ej2-react-navigations';
+import { Query, DataUtil } from '@syncfusion/ej2-data';
 import * as XLSX from 'xlsx';
 
 import { gridData } from '../data/virtualData';
@@ -50,9 +52,11 @@ const shippedDateHeaderTemplate = createDecoratedHeader('e-icons e-timeline-toda
 
 
 // Main grid page component that wires dialogs, filters, uploads, and grid actions.
-export default function Home() {
+export default function UpdateGrid() {
   const gridRef = useRef(null);
   const selectGridRef = useRef(null);
+
+  const fieldFocusRef = useRef(null);
   const [isBulkUpdateOpen, setIsBulkUpdateOpen] = useState(false);
   const [bulkUpdateField, setBulkUpdateField] = useState('');
   const [bulkUpdateValue, setBulkUpdateValue] = useState('');
@@ -60,6 +64,7 @@ export default function Home() {
   const [excelFile, setExcelFile] = useState(null);
   const [isSelectedRecordsDialogOpen, setIsSelectedRecordsDialogOpen] = useState(false);
   const [dropElement, setDropElement] = useState(null);
+  const [selectedRowData, setSelectedRowData] = useState(null);
 
   // Capture the upload drop area once the component is mounted.
   useEffect(() => {
@@ -67,15 +72,314 @@ export default function Home() {
     setDropElement(element || null);
   }, []);
 
-  const [bulkUpdateFields, setBulkUpdateFields] = useState([]);
+  const updateSelectedData = useCallback(() => {
+       const remainingSelectedRecords = gridRef.current?.getSelectedRecords?.() ?? [];
 
-  const updateBulkUpdateFields = useCallback(() => {
-    const fields = gridRef.current?.getVisibleColumns?.()
-      ?.filter((col) => col && col.field && col.isPrimaryKey !== true)
-      ?.map((col) => ({ text: col.headerText || col.field, value: col.field }))
-      ?.filter((item) => item.value) ?? [];
-    setBulkUpdateFields(fields);
+    if (!remainingSelectedRecords.length) {
+      setSelectedRowData(null);
+      return;
+    }
+
+    const records = remainingSelectedRecords;
+    const firstRecord = records[0] ?? {};
+    const mergedRecord = { ...firstRecord };
+    const allKeys = new Set(Object.keys(firstRecord));
+
+    records.slice(1).forEach((record) => {
+      if (!record || typeof record !== 'object') return;
+      Object.keys(record).forEach((key) => {
+        if (!allKeys.has(key)) allKeys.add(key);
+      });
+    });
+
+    Array.from(allKeys).forEach((key) => {
+      const values = records
+        .map((record) => (record && typeof record === 'object' ? record[key] : undefined))
+        .filter((value) => value !== undefined);
+
+      if (!values.length) {
+        mergedRecord[key] = null;
+        return;
+      }
+
+      const firstValue = values[0];
+      const hasCommonValue = values.every((value) => {
+        if (value === null || firstValue === null) return value === firstValue;
+        if (typeof value === 'number' && typeof firstValue === 'number') return value === firstValue;
+        if (typeof value === 'string' && typeof firstValue === 'string') return value === firstValue;
+        if (value instanceof Date && firstValue instanceof Date) return value.getTime() === firstValue.getTime();
+        return String(value) === String(firstValue);
+      });
+
+      mergedRecord[key] = hasCommonValue ? firstValue : null;
+    });
+
+    setSelectedRowData(mergedRecord);
   }, []);
+
+  const handleRowSelected = useCallback((args) => {
+
+    const selectedRecords = args?.data ?? args?.rowData ?? null;
+
+    if (!selectedRecords) {
+      setSelectedRowData(null);
+      return;
+    }
+
+    const records = Array.isArray(selectedRecords) ? selectedRecords : [selectedRecords];
+    if (!records.length) {
+      setSelectedRowData(null);
+      return;
+    }
+
+    const firstRecord = records[0] ?? {};
+    const mergedRecord = { ...firstRecord };
+    const allKeys = new Set(Object.keys(firstRecord));
+
+    records.slice(1).forEach((record) => {
+      if (!record || typeof record !== 'object') return;
+
+      Object.keys(record).forEach((key) => {
+        if (!allKeys.has(key)) {
+          allKeys.add(key);
+        }
+      });
+    });
+
+    Array.from(allKeys).forEach((key) => {
+      const values = records
+        .map((record) => record && typeof record === 'object' ? record[key] : undefined)
+        .filter((value) => value !== undefined);
+
+      if (!values.length) {
+        mergedRecord[key] = null;
+        return;
+      }
+
+      const firstValue = values[0];
+      const hasCommonValue = values.every((value) => {
+        if (value === null || firstValue === null) {
+          return value === firstValue;
+        }
+
+        if (typeof value === 'number' && typeof firstValue === 'number') {
+          return value === firstValue;
+        }
+
+        if (typeof value === 'string' && typeof firstValue === 'string') {
+          return value === firstValue;
+        }
+
+        if (value instanceof Date && firstValue instanceof Date) {
+          return value.getTime() === firstValue.getTime();
+        }
+
+        return String(value) === String(firstValue);
+      });
+
+      mergedRecord[key] = hasCommonValue ? firstValue : null;
+    });
+
+    setSelectedRowData(mergedRecord);
+  }, []);
+
+  const handleRowDeselected = useCallback((args) => {
+      updateSelectedData()
+  }, []);
+
+  const bulkUpdate = useCallback((field, args) => {
+    bulkCellUpdate(field, args.value, selectedRowData ? [selectedRowData] : null);
+    gridRef.current.refresh();
+  }, []);
+  const handleDropdownChange = useCallback((field, args) => {
+    bulkUpdate(field, args);
+  }, []);
+
+  const handleNumericChange = useCallback((field, args) => {
+    bulkUpdate(field, args);
+  }, []);
+
+  const handleDateChange = useCallback((field, args) => {
+    bulkUpdate(field, args);
+  }, []);
+
+  const handleTextChange = useCallback((field, args) => {
+    bulkUpdate(field, args);
+  }, []);
+
+  const renderFieldControl = useCallback((field, type = 'text', options = [], labelText = field) => {
+    const value = selectedRowData?.[field];
+
+    const fieldControl = (() => {
+      if (type === 'dropdown') {
+        return (
+          <DropDownListComponent
+            key={field}
+            dataSource={options}
+            value={value ?? null}
+            fields={{ text: 'text', value: 'value' }}
+            floatLabelType="Always"
+            style={{ width: '100%' }}
+            change={(args) => handleDropdownChange(field, args)}
+          />
+        );
+      }
+
+      if (type === 'number') {
+        return (
+          <NumericTextBoxComponent
+            key={field}
+            value={value ?? 0}
+            floatLabelType="Always"
+            style={{ width: '100%' }}
+            format="N2"
+            change={(args) => handleNumericChange(field, args)}
+          />
+        );
+      }
+
+      if (type === 'date') {
+        return (
+          <DatePickerComponent
+            key={field}
+            value={value ? new Date(value) : null}
+            floatLabelType="Always"
+            style={{ width: '100%' }}
+            change={(args) => handleDateChange(field, args)}
+          />
+        );
+      }
+
+      return (
+        <TextBoxComponent
+          key={field}
+          value={value ?? ''}
+          floatLabelType="Always"
+          style={{ width: '100%' }}
+          change={(args) => handleTextChange(field, args)}
+        />
+      );
+    })();
+
+    return (
+      <div
+        key={field}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '130px minmax(0, 1fr)',
+          alignItems: 'center',
+          gap: '8px',
+          width: '100%',
+        }}
+      >
+        <label style={{ fontSize: '12px', color: '#475569', fontWeight: 600, whiteSpace: 'nowrap' }}>
+          {labelText}
+        </label>
+        <div style={{ minWidth: 0 }}>{fieldControl}</div>
+      </div>
+    );
+  }, [selectedRowData]);
+
+  const getColumnRendererType = useCallback((column) => {
+    const editType = column?.editType || column?.type || 'string';
+
+    if (editType === 'dropdownedit' || editType === 'dropdown') return 'dropdown';
+    if (editType === 'numericedit' || editType === 'number') return 'number';
+    if (editType === 'datepickeredit' || editType === 'date') return 'date';
+
+    return 'text';
+  }, []);
+
+  const getColumnDropdownOptions = useCallback((column) => {
+    const field = column?.field || '';
+    if (!field) return [];
+
+    const dataSource = column?.dataSource || [];
+    if (Array.isArray(dataSource) && dataSource.length) {
+      return dataSource.map((item) => {
+        if (typeof item === 'string') {
+          return { text: item, value: item };
+        }
+        return {
+          text: item.text ?? item.label ?? item.value,
+          value: item.value ?? item.text ?? item.label,
+        };
+      });
+    }
+
+    const distinctValues = DataUtil.distinct(gridData, field) || [];
+    if (distinctValues.length) {
+      return distinctValues.map((item) => ({
+        text: item,
+        value: item,
+      }));
+    }
+
+    const staticOptions = {
+      OrderStatus: ['Ready To Ship', 'In Transit', 'Delivered'],
+      Priority: ['Low', 'Medium', 'High', 'Critical'],
+      ShipCountry: ['USA', 'Canada', 'Mexico', 'UK'],
+      PaymentMethod: ['Credit Card', 'Cash On Delivery', 'UPI', 'Net Banking'],
+      PaymentStatus: ['Paid', 'Pending', 'Refunded'],
+    };
+
+    return (staticOptions[field] || []).map((item) => ({ text: item, value: item }));
+  }, []);
+
+  const accordionSections = useCallback(() => {
+    const columns = gridRef.current?.getColumns?.() || [];
+    const validColumns = columns.filter((column) => {
+      const field = column?.field;
+      if (!field || column?.isPrimaryKey || column?.allowEditing === false) return false;
+      return true;
+    });
+
+    const groups = {
+      Order: [],
+      Shipping: [],
+      Customer: [],
+      General: [],
+    };
+
+    validColumns.forEach((column) => {
+      const field = column.field;
+      let groupName = 'General';
+
+      if (/^(Order|Product|Gross|Discount|Tax|Total|Priority)/.test(field)) {
+        groupName = 'Order';
+      } else if (/^(Ship|Payment)/.test(field) || /Fee|Status/.test(field)) {
+        groupName = 'Shipping';
+      } else if (/^(Customer|Email|Phone)/.test(field)) {
+        groupName = 'Customer';
+      }
+
+      groups[groupName].push({
+        ...column,
+        label: column.headerText || field,
+        rendererType: getColumnRendererType(column),
+        dropdownOptions: getColumnDropdownOptions(column),
+      });
+    });
+
+    return Object.entries(groups)
+      .filter(([, fields]) => fields.length)
+      .map(([title, fields]) => ({
+        title,
+        fields,
+        content: () => (
+          <div style={{ display: 'grid', gap: '12px', width: '100%', minWidth: 0 }}>
+            {fields.map((column) =>
+              renderFieldControl(
+                column.field,
+                column.rendererType,
+                column.dropdownOptions,
+                column.label
+              )
+            )}
+          </div>
+        ),
+      }));
+  }, [renderFieldControl, getColumnRendererType, getColumnDropdownOptions]);
 
   // Row height presets used by the toolbar actions.
   const rowHeightMap = {
@@ -258,6 +562,7 @@ export default function Home() {
         grid.clearGrouping();
         grid.searchSettings.key = '';
         grid.clearSelection();
+        setSelectedRowData(null);
         grid.pageSettings.currentPage = 1;
         grid.refresh();
         break;
@@ -276,15 +581,6 @@ export default function Home() {
     }
   };
 
-  // Open the bulk update dialog from the context menu.
-  const contextMenuClick = (args) => {
-    if (args.item.id === 'bulkUpdate') {
-
-      setBulkUpdateField('');
-      setBulkUpdateValue('');
-      setIsBulkUpdateOpen(true);
-    }
-  };
 
   // Apply a single value or value array to multiple selected grid rows.
   const bulkCellUpdate = (
@@ -370,26 +666,6 @@ export default function Home() {
     gridRef.current.getDataModule().saveChanges(changes, pkName, original);
   }
 
-  // Confirm and apply the bulk update dialog values.
-  const handleBulkUpdateOk = () => {
-    const grid = gridRef.current;
-
-    if (!grid || !bulkUpdateField) return;
-
-    let selectedRecords = grid.getSelectedRecords();
-    bulkCellUpdate(bulkUpdateField, bulkUpdateValue, selectedRecords);
-    gridRef.current.freezeRefresh();
-    setIsBulkUpdateOpen(false);
-
-  };
-
-  // Close the bulk update dialog without saving changes.
-  const handleBulkUpdateCancel = () => {
-    setBulkUpdateField('');
-    setBulkUpdateValue('');
-    setIsBulkUpdateOpen(false);
-  };
-
   // Load grid data from the selected Excel file.
   const handleExcelBind = () => {
     const grid = gridRef.current;
@@ -411,12 +687,6 @@ export default function Home() {
 
           grid.pinnedTopRowKeys = {}
           grid.pinnedRowIndexes = {}
-
-          //   grid.contextMenuItems=isDevice ? [] : [
-          //   'AutoFit', 'SortAscending', 'SortDescending',
-          //   'Copy', 'Edit', 'Save', 'Cancel',
-          //   'Group', 'Ungroup'
-          // ]
 
           gridRef.current.changeDataSource(XL_row_object);
 
@@ -471,41 +741,7 @@ export default function Home() {
   return (
 
     <div className={`home-grid-parent`}>
-      <DialogComponent
-        width={isDevice ? '300px' : '360px'}
-        header="Bulk Update"
-        visible={isBulkUpdateOpen}
-        showCloseIcon
-        isModal
-        close={handleBulkUpdateCancel}
-        buttons={[
-          {
-            buttonModel: { content: 'Cancel' },
-            click: handleBulkUpdateCancel,
-          },
-          {
-            buttonModel: { content: 'OK', isPrimary: true },
-            click: handleBulkUpdateOk,
-          },
-        ]}
-      >
-        <div style={{ display: 'grid', gap: '18px', padding: '8px 0' }}>
-          <DropDownListComponent
-            placeholder="Column Field"
-            dataSource={bulkUpdateFields}
-            fields={{ text: 'text', value: 'value' }}
-            value={bulkUpdateField || null}
-            change={(args) => setBulkUpdateField(args.value || '')}
-            floatLabelType="Always"
-          />
-          <TextBoxComponent
-            placeholder="Enter Value"
-            value={bulkUpdateValue}
-            input={(args) => setBulkUpdateValue(args.value || '')}
-            floatLabelType="Always"
-          />
-        </div>
-      </DialogComponent>
+
       <DialogComponent
         width={isDevice ? '320px' : '420px'}
         header="Bind from Excel"
@@ -550,10 +786,7 @@ export default function Home() {
               dataSource={[]}
               height={isDevice ? '260' : '320'}
               width="100%"
-
             >
-
-
             </GridComponent></div>
 
         }}
@@ -589,14 +822,13 @@ export default function Home() {
           <span>Bind from Excel</span>
         </button>
       </div>
-      <div className={`${isDevice ? ' e-bigger' : ''}`}>
+      <div className={`${isDevice ? ' e-bigger' : ''}`} style={{ display: 'grid', gridTemplateColumns: isDevice ? '1fr' : 'minmax(0, 1fr) 360px', gap: '16px', alignItems: 'start', width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
+
         <GridComponent
           id="orders-grid"
           ref={gridRef}
           created={() => {
-
             gridRef.current.columns[0].isPrimaryKey = true;
-            updateBulkUpdateFields();
           }}
           isRowPinned={(data) => {
             if (data && !isDevice && data.Priority === 'Critical' && data.PaymentStatus === 'Paid') {
@@ -607,8 +839,7 @@ export default function Home() {
           }
           dataSource={gridData}
           columnMenuItems={['AutoFit', 'Group', 'Ungroup', 'SortAscending', 'SortDescending']}
-          height={isDevice ? "400" : "200"}
-          width="100%"
+          height={isDevice ? '400' : '200'}
           rowHeight={isDevice ? undefined : rowHeightMap.normal}
           allowSorting
           allowMultiSorting
@@ -625,8 +856,30 @@ export default function Home() {
 
           allowSelection
           selectionSettings={selectionSettings}
-          editSettings={editSettings}
+          rowSelected={handleRowSelected}
 
+          rowDeselected={handleRowDeselected}
+          editSettings={editSettings}
+          recordDoubleClick={(args) => {
+            const nextField = args?.column?.field ?? null;
+            fieldFocusRef.current = nextField;
+          }}
+          actionComplete={(args) => {
+            const focusedField = fieldFocusRef.current ?? gridRef.current?.getColumns()?.[0]?.field;
+            if (args.requestType === 'beginEdit' && focusedField) {
+              const elementId = gridRef.current?.element?.id;
+              const fieldElement = args.form?.elements?.[`${elementId}${focusedField}`];
+
+              if (fieldElement) {
+                fieldElement.focus();
+              }
+              fieldFocusRef.current = null;
+
+            }
+            if(args.requestType === 'save') {
+              updateSelectedData()
+            }
+          }}
           toolbar={toolbar}
           toolbarClick={toolbarClick}
           sortSettings={sortSettings}
@@ -637,9 +890,8 @@ export default function Home() {
           contextMenuItems={isDevice ? [] : [
             'AutoFit', 'SortAscending', 'SortDescending',
             'Copy', 'Edit', 'Save', 'Cancel',
-            'Group', 'Ungroup', { id: 'bulkUpdate', text: 'Bulk Update' }
+            'Group', 'Ungroup'
           ]}
-          contextMenuClick={contextMenuClick}
         >
           <ColumnsDirective>
             {/* --------- Stacked header: Order Info --------- */}
@@ -655,18 +907,15 @@ export default function Home() {
             <ColumnDirective
               headerText="Order Info"
               textAlign="Center"
-
               columns={[
 
                 {
                   field: 'OrderStatus',
                   headerText: 'Order Status',
                   width: 170,
-                  validationRules: { required: true },
                   textAlign: 'Left',
                   editType: 'dropdownedit',
                   filterBarTemplate: orderStatusFilterTemplate,
-
                 },
                 {
                   field: 'OrderDate',
@@ -878,6 +1127,24 @@ export default function Home() {
             ]}
           />
         </GridComponent>
+
+        {!isDevice && selectedRowData && (
+          <div style={{ minWidth: 0, border: '1px solid #e5e7eb', borderRadius: '8px', padding: '12px', background: '#fff', minHeight: '200px', overflow: 'auto' }}>
+            <div style={{ fontWeight: 600, marginBottom: '12px' }}>Selected Row Details</div>
+            <AccordionComponent width="100%" height={450} expandMode={'Multiple'} className="selected-row-accordion">
+              <AccordionItemsDirective>
+                {accordionSections().map((section) => (
+                  <AccordionItemDirective
+                    key={section.title}
+                    header={section.title}
+                    expanded={true}
+                    content={section.content}
+                  />
+                ))}
+              </AccordionItemsDirective>
+            </AccordionComponent>
+          </div>
+        )}
       </div>
     </div>
   );

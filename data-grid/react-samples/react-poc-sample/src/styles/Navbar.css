@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 60px;
+  min-height: 60px;
 }
 
 .navbar-brand {
@@ -30,14 +30,17 @@
 
 .navbar-menu {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   align-items: center;
+  width: 100%;
 }
 
 .navbar-item {
   display: flex;
   align-items: center;
-  padding: 8px 16px;
+  justify-content: center;
+  padding: 8px 14px;
   background-color: transparent;
   color: #d1d5db;
   border: none;
@@ -66,4 +69,28 @@
 
 .navbar-item .e-icons {
   font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .navbar-container {
+    padding: 8px 8px 10px;
+  }
+
+  .navbar-menu {
+    gap: 6px;
+    justify-content: flex-start;
+  }
+
+  .navbar-item {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
 }

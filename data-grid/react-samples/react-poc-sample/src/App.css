@@ -1,4 +1,5 @@
 @import "@syncfusion/ej2-tailwind3-theme/styles/tailwind3.css";
+@import "@syncfusion/ej2-tailwind3-theme/styles/accordion/index.css";
 
 #orders-grid.e-grid.e-resize-lines th.e-headercell.e-firstcell:not(.e-freezerightborder, .e-freezeleftborder) {
   border-left-color: var(--color-sf-border-light);
