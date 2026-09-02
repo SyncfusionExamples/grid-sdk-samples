@@ -7,10 +7,11 @@ function DataGrid() {
   const gridRef = React.useRef(null);
   const dropdownRef = React.useRef(null);
   const dataCountRef = React.useRef('1000');
+  let enableVirtualization=true;
   const ddlData = React.useMemo(() => ([
-    { text: '1,000 Rows and 7 Columns', value: '1000' },
-    { text: '10,000 Rows and 7 Columns', value: '10000' },
-    { text: '1,00,000 Rows and 7 Columns', value: '100000' }
+    { text: '1,000 Rows and 11 Columns', value: '1000' },
+    { text: '10,000 Rows and 11 Columns', value: '10000' },
+    { text: '1,00,000 Rows and 11 Columns', value: '100000' }
   ]), []);
   const fields = React.useMemo(() => ({ text: 'text', value: 'value' }), []);
   const data = React.useMemo(() => new DataManager({
@@ -35,13 +36,21 @@ function DataGrid() {
     }
   }, []);
 
+  const load=(args)=>
+  {
+    if(enableVirtualization)
+    {
+      args.enableSeamlessScrolling=true;
+    }
+  }
+
   return (<div className='control-pane'>
     <div className='control-section' style={{ marginTop: '60px', paddingLeft: '25px', paddingRight: '26px' }}>
       <div style={{ paddingBottom: '18px', paddingTop: '20px' }}>
         <DropDownListComponent id="games" width="240px" dataSource={ddlData} value={dataCountRef.current} ref={dropdownRef} fields={fields} change={onChange} placeholder="Select a Data Range" popupHeight="240px" />
         <br />
       </div>
-      <GridComponent id="DOMVirtualGrid" ref={gridRef} dataSource={data} query={queryRef.current} height={400} rowHeight={50} enableVirtualization={true} enableDomVirtualization={true} pageSettings={{ pageSize: 100 }} domVirtualizationSettings={{ rowBuffer: 10 }} clipMode='EllipsisWithTooltip' allowSorting={true} allowFiltering={true} allowSelection={true} filterSettings={{ type: 'CheckBox' }}>
+      <GridComponent id="DOMVirtualGrid" ref={gridRef} dataSource={data} query={queryRef.current} height={400} rowHeight={50} enableVirtualization={enableVirtualization} load={load} pageSettings={{ pageSize: 50 }} clipMode='EllipsisWithTooltip' allowSorting={true} allowFiltering={true} allowSelection={true} filterSettings={{ type: 'CheckBox' }}>
         <ColumnsDirective>
           <ColumnDirective field='EmployeeID' headerText='Employee ID' width='150' isPrimaryKey={true} textAlign='Right'></ColumnDirective>
           <ColumnDirective field='Employees' headerText='Employee Name' width='260'></ColumnDirective>
@@ -50,6 +59,10 @@ function DataGrid() {
           <ColumnDirective field='CurrentSalary' headerText='Current Salary' width='160' format='C2' textAlign='Right'></ColumnDirective>
           <ColumnDirective field='Location' headerText='Location' width='160'></ColumnDirective>
           <ColumnDirective field='Address' headerText='Address' width='240'></ColumnDirective>
+          <ColumnDirective field='Mail' headerText='Mail' width='240'></ColumnDirective>
+          <ColumnDirective field='Rating' headerText='Rating' width='130'></ColumnDirective>
+          <ColumnDirective field='Trustworthiness' headerText='Trustworthiness' width='240'></ColumnDirective>
+          <ColumnDirective field='Status' headerText='Status' width='200'></ColumnDirective>
         </ColumnsDirective>
         <Inject services={[Sort, Filter, Selection, VirtualScroll, DomVirtualization]} />
       </GridComponent>
@@ -57,4 +70,3 @@ function DataGrid() {
   </div>);
 }
 export default DataGrid;
-
