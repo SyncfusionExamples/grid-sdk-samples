@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router';
 import './App.css';
 
 import DataGrid from './components/Grid';
@@ -10,7 +10,6 @@ function App() {
         <main className="app-main">
           <Routes>
             <Route path="/" element={<DataGrid />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
       </div>
