@@ -1145,7 +1145,7 @@ export default function UpdateGrid() {
           <div
             style={{
               minWidth: 0,
-              borderLeft: '2px solid black',
+              borderLeft: '4px solid #e5e7eb',
               paddingLeft: '16px',
               boxSizing: 'border-box',
             }}

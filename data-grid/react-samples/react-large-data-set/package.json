@@ -10,19 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
-      "@syncfusion/ej2-react-buttons": "*",
-      "@syncfusion/ej2-react-calendars": "*",
-      "@syncfusion/ej2-react-dropdowns": "*",
-      "@syncfusion/ej2-react-grids": "*",
-      "@syncfusion/ej2-react-inputs": "*",
-      "@syncfusion/ej2-react-popups": "*",
-      "@syncfusion/ej2-react-navigations": "*",
-      "@syncfusion/ej2-react-querybuilder": "*",
-      "@syncfusion/ej2-tailwind3-theme": "*",
+    "@syncfusion/ej2-react-buttons": "*",
+    "@syncfusion/ej2-react-calendars": "*",
+    "@syncfusion/ej2-react-dropdowns": "*",
+    "@syncfusion/ej2-react-grids": "*",
+    "@syncfusion/ej2-react-inputs": "*",
+    "@syncfusion/ej2-react-popups": "*",
+    "@syncfusion/ej2-react-querybuilder": "*",
+    "@syncfusion/ej2-tailwind3-theme": "*",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router": "8.3.0",
-    "xlsx": "^0.18.5"
+    "react-router": "8.3.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.18",
