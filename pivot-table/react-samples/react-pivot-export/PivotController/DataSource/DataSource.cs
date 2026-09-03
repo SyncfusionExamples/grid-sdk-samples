@@ -83,11 +83,11 @@ namespace PivotController.Controllers
             {
                 List<PivotViewData> VirtualData = new List<PivotViewData>();
 
-                for (int i = 1; i <= 20000; i++)
+                for (int i = 1; i <= 500000; i++)
                 {
                     PivotViewData p = new PivotViewData
                     {
-                        ProductID = "PRO-" + (20000 + (i % 5000)),
+                        ProductID = "PRO-" + (500000 + (i % 20000)),
                         Year = (new string[] { "FY 2015", "FY 2016", "FY 2017", "FY 2018", "FY 2019" })[new Random().Next(5)],
                         Country = (new string[] { "Canada", "France", "Australia", "Germany", "France" })[new Random().Next(5)],
                         Product = (new string[] { "Car", "Van", "Bike", "Flight", "Bus" })[new Random().Next(5)],
@@ -97,16 +97,6 @@ namespace PivotController.Controllers
                     VirtualData.Add(p);
                 }
                 return VirtualData;
-            }
-
-            public List<PivotViewData> ReadJSONData(string url)
-            {
-                WebClient myWebClient = new WebClient();
-                Stream myStream = myWebClient.OpenRead(url);
-                StreamReader stream = new StreamReader(myStream);
-                string result = stream.ReadToEnd();
-                stream.Close();
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<List<PivotViewData>>(result);
             }
         }
 
