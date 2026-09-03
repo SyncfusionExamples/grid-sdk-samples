@@ -16,7 +16,7 @@ import { Browser } from '@syncfusion/ej2-base';
 import { useRef } from 'react';
 
 const pivotServiceUrl = import.meta.env.VITE_PIVOT_SERVICE_URL
-  ?? 'https://pivot-controller-f9a8awhsh8haaaep.centralus-01.azurewebsites.net/api/pivot/post';
+  ?? 'http://localhost:5285/api/pivot/post';
 const pivotExcelExportAction = 'onPivotExcelExport';
 
 const dataSourceSettings: IDataOptions = {
