@@ -52,7 +52,7 @@ function DataGrid() {
         <DropDownListComponent id="games" width="240px" dataSource={ddlData} value={dataCountRef.current} ref={dropdownRef} fields={fields} change={onChange} placeholder="Select a Data Range" popupHeight="240px" />
         <br />
       </div>
-      <GridComponent id="VirtualGrid" ref={gridRef} dataSource={data} query={queryRef.current} height={400} rowHeight={50} enableVirtualization={enableVirtualization} load={load} pageSettings={{ pageSize: 50 }} clipMode='EllipsisWithTooltip' allowSorting={true} allowFiltering={true} allowSelection={true} filterSettings={{ type: 'CheckBox', enableInfiniteScrolling: true }}>
+      <GridComponent id="VirtualGrid" ref={gridRef} dataSource={data} query={queryRef.current} height={"75vh"} rowHeight={50} enableVirtualization={enableVirtualization} load={load} pageSettings={{ pageSize: 50 }} clipMode='EllipsisWithTooltip' allowSorting={true} allowFiltering={true} allowSelection={true} filterSettings={{ type: 'CheckBox', enableInfiniteScrolling: true }}>
         <ColumnsDirective>
           <ColumnDirective field='EmployeeID' headerText='Employee ID' width='150' isPrimaryKey={true} textAlign='Right'></ColumnDirective>
           <ColumnDirective field='Employees' headerText='Employee Name' width='260'></ColumnDirective>
@@ -71,4 +71,3 @@ function DataGrid() {
   </div>);
 }
 export default DataGrid;
-
