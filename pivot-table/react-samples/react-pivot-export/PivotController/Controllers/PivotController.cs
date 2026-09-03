@@ -97,8 +97,7 @@ namespace PivotController.Controllers
 
                     // Here, you can refer different kinds of data sources. We've bound a collection in this illustration.
                     // return new PivotViewData().GetVirtualData();
-                    //return new DataSource.PivotViewData().GetVirtualData();
-                    return new DataSource.PivotViewData().ReadJSONData(_hostingEnvironment.ContentRootPath + "\\DataSource\\sales-data.json");
+                    return new DataSource.PivotViewData().GetVirtualData();
 
                     // EXAMPLE:
                     // Other data sources, such as DataTable, CSV, JSON, etc., can be bound as shown below.
