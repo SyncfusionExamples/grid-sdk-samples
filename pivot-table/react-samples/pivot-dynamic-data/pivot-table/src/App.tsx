@@ -14,32 +14,21 @@ import {
 } from '@syncfusion/ej2-react-pivotview';
 import { Browser } from '@syncfusion/ej2-base';
 import { useRef } from 'react';
+import './App.css';
 
 const pivotServiceUrl = import.meta.env.VITE_PIVOT_SERVICE_URL
-  ?? 'http://localhost:5285/api/pivot/post';
+  ?? 'https://pivot-controller-f9a8awhsh8haaaep.centralus-01.azurewebsites.net/api/pivot/post';
 const pivotExcelExportAction = 'onPivotExcelExport';
 
 const dataSourceSettings: IDataOptions = {
   url: pivotServiceUrl,
   mode: 'Server',
   type: 'JSON',
-  rows: [{
-    name: 'ProductID', caption: 'Product ID'
-  }],
   enableSorting: true,
-  formatSettings: [{
-    name: 'Price',
-    format: 'C'
-  }],
-  columns: [{
-    name: 'Year', caption: 'Production Year'
-  }],
-  values: [{
-    name: 'Sold', caption: 'Units Sold'
-  },
-  {
-    name: 'Price', caption: 'Sold Amount'
-  }]
+  rows: [],
+  columns: [],
+  values: [],
+  filters: [],
 };
 
 function App() {
@@ -90,24 +79,32 @@ function App() {
   }
 
   return (
-    <PivotViewComponent
-      id='PivotView'
-      ref={pivotObj}
-      dataSourceSettings={dataSourceSettings}
-      width='100%'
-      height='700'
-      showToolbar={true}
-      gridSettings={{ columnWidth: Browser.isDevice ? 100 : 120 }}
-      showFieldList={true}
-      showGroupingBar={true}
-      enableVirtualization={true}
-      toolbar={toolbarOptions}
-      toolbarRender={toolbarRender}
-      afterServiceInvoke={afterServiceInvoke}
-      actionFailure={actionFailure}
-    >
-      <Inject services={[FieldList, Toolbar, ExcelExport, GroupingBar, VirtualScroll]} />
-    </PivotViewComponent>
+    <main className='app-shell' aria-label='Dynamic data pivot table'>
+      <header className='page-header'>
+        <h1>Dynamic Data Analysis</h1>
+        <p>Open the Field List and drag discovered fields into Rows, Columns, Values, or Filters.</p>
+      </header>
+      <div className='pivot-table-container'>
+        <PivotViewComponent
+          id='PivotView'
+          ref={pivotObj}
+          dataSourceSettings={dataSourceSettings}
+          width='100%'
+          height='100%'
+          showToolbar={true}
+          gridSettings={{ columnWidth: Browser.isDevice ? 100 : 120 }}
+          showFieldList={true}
+          showGroupingBar={true}
+          enableVirtualization={true}
+          toolbar={toolbarOptions}
+          toolbarRender={toolbarRender}
+          afterServiceInvoke={afterServiceInvoke}
+          actionFailure={actionFailure}
+        >
+          <Inject services={[FieldList, Toolbar, ExcelExport, GroupingBar, VirtualScroll]} />
+        </PivotViewComponent>
+      </div>
+    </main>
   );
 }
 
