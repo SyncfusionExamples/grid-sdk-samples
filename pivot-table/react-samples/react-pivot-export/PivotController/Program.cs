@@ -1,5 +1,9 @@
+using PivotController.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 var CustomOrigins = "_customOrigins";
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -18,6 +22,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddMemoryCache((options) =>
 {
     options.SizeLimit = 100;
+});
+builder.Services.AddScoped(serviceProvider =>
+{
+    IWebHostEnvironment environment = serviceProvider.GetRequiredService<IWebHostEnvironment>();
+    IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    return new DynamicDataLoader(configuration, Path.Combine(environment.ContentRootPath, "DataSource"));
 });
 
 var app = builder.Build();

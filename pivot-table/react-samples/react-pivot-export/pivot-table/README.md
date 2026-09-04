@@ -1,69 +1,57 @@
-# Syncfusion React Pivot Table – Server Mode
+# Dynamic Data Pivot Table POC
 
-This sample demonstrates a Syncfusion React Pivot Table that connects to a
-server-side pivot engine. It presents product sales by year and supports
-interactive report configuration and Excel export.
+This sample connects a Syncfusion React Pivot Table to the .NET server-side pivot engine without a compile-time data-row model. The API can read a flat JSON array, CSV file, or SQLite query into runtime `ExpandoObject` records.
 
-## Core functionality
+## Select a data source
 
-- Processes pivot operations through a server endpoint
-- Displays `ProductID` in rows and `Year` in columns
-- Aggregates units sold and sales amount
-- Formats the sales amount as currency
-- Supports field sorting
-- Provides a grouping bar for rearranging report fields
-- Provides a field list for configuring the report at runtime
-- Uses virtualization to render large reports efficiently
-- Adjusts grid column width for desktop and mobile devices
-- Exports the complete report to Excel in pivot format
+Set `PivotDataSource:Type` in `PivotController/appsettings.json` to one of:
 
-## Prerequisites
+- `Json` — reads `JsonPath`.
+- `Csv` — reads `CsvPath` using `CsvDelimiter`; the first row supplies field names and column types are inferred.
+- `Database` — reads the configured SQLite `DatabasePath` using the fixed `Query`. The included database is created from `sales.sql` on first use.
 
-- Node.js and npm
-- A compatible Syncfusion Pivot Table server endpoint
-- A valid Syncfusion license for your environment
+All paths are relative to `PivotController/DataSource` and cannot escape that directory. Source locations and SQL are server-controlled; the browser cannot submit arbitrary paths, URLs, connection strings, or queries. Restart the API after changing the source type.
 
-The server endpoint must support Syncfusion Pivot Table server-mode actions,
-including pivot initialization, interactive data operations, and
-`onPivotExcelExport`.
+### CSV delimiter configuration
 
-## Configure the server endpoint
+CSV parsing is not limited to commas. Configure one delimiter character in `PivotController/appsettings.json`:
 
-Copy `.env.example` to `.env`, then set the URL of your Pivot Table service:
-
-```text
-VITE_PIVOT_SERVICE_URL=https://localhost:44350/api/pivot/post
+```json
+"PivotDataSource": {
+  "Type": "Csv",
+  "CsvPath": "sales.csv",
+  "CsvDelimiter": ";"
+}
 ```
 
-If the environment variable is omitted, the sample uses the URL shown above.
+Common values are `","` for comma, `";"` for semicolon, `"|"` for pipe, and `"\t"` for tab. Quoted fields may contain the configured delimiter. For example, `West;"Bike; Deluxe";12.50` is parsed as three values when the delimiter is `;`.
 
 ## Run the sample
 
-Install the dependencies:
-
 ```sh
-npm install
+cd PivotController
+dotnet run
 ```
 
-Start the development server:
+In another terminal:
 
 ```sh
+cd pivot-table
+npm install
 npm run dev
 ```
 
-Open the URL printed by Vite. Use the grouping bar or field list to modify the
-report, and select the Excel icon in the toolbar to export it.
+The React app uses `http://localhost:5285/api/pivot/post` by default. Override it with `VITE_PIVOT_SERVICE_URL` when required.
 
-## Commands
+The report intentionally starts empty. Open **Field List**, then drag any discovered fields into Rows, Columns, Values, or Filters. Grouping, filtering, virtualization, raw-data operations, and pivot Excel export continue through the same server endpoint.
 
-| Command | Description |
-| --- | --- |
-| `npm run dev` | Start the Vite development server |
-| `npm run build` | Type-check and create a production build |
-| `npm run lint` | Run ESLint |
-| `npm run preview` | Preview the production build locally |
+## Verification
 
-## License
+From the workspace root:
 
-This sample uses Syncfusion Essential Studio components. Register your
-Syncfusion license as required by your organization and deployment model.
+```sh
+dotnet test PivotController.Tests/PivotController.Tests.csproj
+cd pivot-table
+npm run lint
+npm run build
+```
