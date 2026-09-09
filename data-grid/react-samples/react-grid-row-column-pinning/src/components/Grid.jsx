@@ -6,7 +6,8 @@ import {
   ContextMenu,
   Inject,
   Page,
-  Freeze
+  Freeze,
+  Reorder
 } from '@syncfusion/ej2-react-grids';
 import { taskData } from './data';
 
@@ -73,6 +74,7 @@ function DataGrid() {
           contextMenuOpen={contextMenuOpen}
           contextMenuClick={contextMenuClick}
           allowPaging={true}
+          allowReordering={true}
           contextMenuItems={contextMenuItems}
           height="350"
           isRowPinned={isRowPinned}
@@ -110,7 +112,7 @@ function DataGrid() {
             />
             <ColumnDirective field="Progress" headerText="Progress" width={100} />
           </ColumnsDirective>
-          <Inject services={[ContextMenu,Freeze, Page]} />
+          <Inject services={[ContextMenu, Freeze, Reorder, Page]} />
         </GridComponent>
     </div>
   </div>);
