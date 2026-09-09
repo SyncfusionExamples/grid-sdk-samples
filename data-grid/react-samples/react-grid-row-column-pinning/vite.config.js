@@ -4,5 +4,5 @@ import { defineConfig } from 'vite'
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === 'build' ? '/CustomDemos/grid-pinning/868499/' : '/',
+  base: command === 'build' ? '/CustomDemos/868499/grid-pinning' : '/',
 }))
