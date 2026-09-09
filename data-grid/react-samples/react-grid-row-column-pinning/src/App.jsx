@@ -1,11 +1,11 @@
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router';
+import { HashRouter as Router, Routes, Route } from 'react-router';
 import './App.css';
-
+import { getPublicBasePath } from './basePath.ts';
 import DataGrid from './components/Grid';
 
 function App() {
   return (
-    <Router>
+    <Router basename={getPublicBasePath()}>
       <div className="app-container">
         <main className="app-main">
           <Routes>
