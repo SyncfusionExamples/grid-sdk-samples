@@ -66,7 +66,7 @@ function DataGrid() {
   };
  
   return (<div className='control-pane'>
-    <div className='control-section' style={{ marginTop: '50px', paddingLeft: '25px', paddingRight: '26px' }}>
+    <div className='control-section' >
      
      <GridComponent
           dataSource={taskData}
@@ -74,9 +74,10 @@ function DataGrid() {
           contextMenuOpen={contextMenuOpen}
           contextMenuClick={contextMenuClick}
           allowPaging={true}
+          pageSettings={{ pageSize: 20 }}
           allowReordering={true}
           contextMenuItems={contextMenuItems}
-          height="350"
+          height="520"
           isRowPinned={isRowPinned}
         >
           <ColumnsDirective>
