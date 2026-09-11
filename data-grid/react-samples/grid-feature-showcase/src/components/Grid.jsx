@@ -16,6 +16,7 @@ import {
   InfiniteScroll,
   Reorder, VirtualScroll,
 } from '@syncfusion/ej2-react-grids';
+import { ToolbarComponent } from '@syncfusion/ej2-react-navigations';
 import { DateRangePicker, DatePicker } from '@syncfusion/ej2-calendars';
 import { DropDownList, MultiSelect, CheckBoxSelection } from '@syncfusion/ej2-dropdowns';
 import { TextBoxComponent } from '@syncfusion/ej2-react-inputs';
@@ -305,8 +306,8 @@ function DataGrid() {
 
   return (
     <div className='control-pane'>
-      <div className='standalone-toolbar' aria-label='Global search toolbar'>
-        <span className='toolbar-title'>Global Search</span>
+      <ToolbarComponent className='standalone-toolbar' aria-label='Global search toolbar'>
+        <div className='toolbar-title'>Global Search</div>
         <div className='toolbar-search'>
           <TextBoxComponent
             ref={searchBoxRef}
@@ -317,7 +318,7 @@ function DataGrid() {
             aria-label='Global search field'
           />
         </div>
-      </div>
+      </ToolbarComponent>
 
       <div className='control-section'>
         <GridComponent
