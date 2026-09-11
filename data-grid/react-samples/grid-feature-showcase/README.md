@@ -1,69 +1,32 @@
-# Large Data Set Grid Sample
+# Advanced Order Management Grid
 
-A React application built with Syncfusion React Data Grid that demonstrates task data display, paging, column reordering, column freezing, and row pinning.
-
-## Overview
-
-This sample renders task data from the local `taskData` collection in `src/components/data.js`.
+A React and Syncfusion EJ2 Data Grid application for exploring a large, feature-rich order dataset. The sample demonstrates stacked headers, filtering, column management, row pinning, and responsive grid sizing.
 
 ## Features
 
-- Local data binding using the task data collection
-- Paging
-- Column reordering by drag and drop
-- Context-menu column freezing on the left or right
-- Context-menu support for unfreezing columns
-- Row pinning for open, critical tasks
-
-## UI Behavior
-
-### Grid
-
-The grid displays these columns in order:
-
-- Task ID
-- Title
-- Project
-- Assignee
-- Priority
-- Status
-- Created Date
-- Due Date
-- Progress
-
-The `Tags` field is intentionally excluded from the grid columns.
-
-The grid uses:
-
-- `allowPaging`
-- `allowReordering`
-- `ContextMenu`
-- `Freeze`
-- `Reorder`
-- `Page`
-
-### Context Menu
-
-The grid customizes the context menu with:
-
-- `Freeze Left` with the `e-chevron-left-double` icon
-- `Freeze Right` with the `e-chevron-right-double` icon
-- `UnFreeze` with the `e-undo` icon
-- Syncfusion `PinRow` and `UnpinRow` actions
-
-The custom freeze actions target column headers only. When opened elsewhere, they are hidden. For an unfrozen column, `Freeze Left` and `Freeze Right` are shown; for a frozen column, those actions are replaced with `UnFreeze`. Selecting a freeze action updates the column's `freeze` setting and refreshes the grid columns.
-
-Rows with `Status: "Open"` and `Priority: "Critical"` are pinned automatically.
-
-## Styling
-
-The grid parent container includes left and right spacing and top spacing. The grid height is set to `350px`.
+- Local generation of 1,000 deterministic order records with 40 fields
+- Syncfusion React Data Grid with horizontal scrolling and infinite scrolling
+- Stacked headers for Order, Customer, Shipping, and Financial fields
+- Visible and hidden columns managed through the Column Chooser
+- Column reordering and resizing
+- Custom toolbar with Column Chooser and Restore Columns actions
+- Restore the original column configuration, filters, and sorting
+- Standalone global search using the Syncfusion TextBox
+- Global search triggered by pressing Enter
+- Clear icon that resets the global search with `grid.search('')`
+- Filter bar with custom MultiSelect and date-range filter templates
+- Column menu with sorting, autofit, and filter type selection
+- Context-menu actions for freezing and unfreezing columns
+- Automatic row pinning for critical orders with paid payment status
+- Responsive viewport-based application layout
 
 ## Technology Stack
 
-- React
-- Syncfusion React Grid
+- React 19
+- Syncfusion EJ2 React Grid
+- Syncfusion EJ2 React Inputs, Dropdowns, and Calendars
 - Vite
+- Azure App Service or IIS-compatible static hosting
 
 ## Getting Started
 
@@ -73,14 +36,57 @@ The grid parent container includes left and right spacing and top spacing. The g
 npm install
 ```
 
-### Run the application
+### Start the development server
 
 ```bash
 npm run dev
 ```
 
-## Files
+### Create a production build
 
-- [src/components/Grid.jsx](src/components/Grid.jsx) — main grid implementation
-- [src/components/data.js](src/components/data.js) — local task data
-- [src/App.jsx](src/App.jsx) — application routing and page mounting
+```bash
+npm run build
+```
+
+The production output is generated in the `dist` directory.
+
+### Preview the production build
+
+```bash
+npm run preview
+```
+
+## Azure Hosting
+
+The Vite configuration uses the `/grid-feature-showcase/` base path:
+
+```js
+base: '/grid-feature-showcase/'
+```
+
+Deploy the contents of the `dist` directory to the matching application path. The `public/web.config` file is copied into `dist` during the build and configures:
+
+- MIME types for JSON, WebAssembly, fonts, SVG, and web manifests
+- Static and dynamic compression
+- SPA fallback to `index.html`
+- Base-path rewriting for real asset files
+
+For a root-domain deployment where the application is not hosted under a subpath, change the Vite base to `/` before building.
+
+## Project Structure
+
+- [src/components/Grid.jsx](src/components/Grid.jsx) - Grid configuration, columns, filters, search, menus, and toolbar actions
+- [src/components/datasource.jsx](src/components/datasource.jsx) - Deterministic order data generator and 40-field dataset
+- [src/App.jsx](src/App.jsx) - Application shell and page layout
+- [src/App.css](src/App.css) - Application and responsive layout styles
+- [public/web.config](public/web.config) - IIS/Azure hosting configuration
+- [vite.config.js](vite.config.js) - Vite build and deployment base path
+
+## Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Build the production bundle |
+| `npm run lint` | Run Oxlint |
+| `npm run preview` | Preview the production bundle |
