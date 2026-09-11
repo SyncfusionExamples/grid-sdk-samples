@@ -14,6 +14,18 @@
   border-left-color: var(--color-sf-border-light);
 }
 
+#ordergrid.e-grid.e-resize-lines tr.e-columnheader th:last-child.e-stackedheadercell .e-rhandler.e-rcursor, .e-grid.e-resize-lines tr.e-columnheader th.e-lastcell .e-rhandler.e-rcursor, .e-grid.e-resize-lines tr.e-columnheader th.e-laststackcell .e-rhandler.e-rcursor, .e-grid.e-resize-lines tr.e-columnheader th.e-last-visible-stack-cell .e-rhandler.e-rcursor, .e-grid.e-resize-lines tr.e-columnheader th.e-last-visible-cell .e-rhandler.e-rcursor {
+    border-right-width: 0.8px;
+	border-right-style: solid;
+	border-right-color: var(--color-sf-border-light);
+}
+
+#ordergrid.e-grid .e-ccdlg .e-footer-content, .e-grid-popup .e-ccdlg .e-footer-content {
+    border-color: var(--color-sf-border-light);
+    opacity: 1;
+}
+ 
+
 body {
 	margin: 0;
 	min-width: 320px;
