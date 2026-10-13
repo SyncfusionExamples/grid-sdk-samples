@@ -6,6 +6,13 @@ Syncfusion Pivot Table is an interactive data analysis component designed to sum
 
 The Pivot Table provides an interactive way to rearrange fields, sort values, review sales summaries, and export the analyzed data for reporting.
 
+## Samples
+
+| Framework | Sample | Description |
+|-----------|--------|-------------|
+| React | [react-samples/performance-benchmark](react-samples/performance-benchmark) | Benchmarks the Pivot Table with 1M records across virtual scrolling, data compression, and paging modes |
+| Vue | [vue-samples/performance-benchmark](vue-samples/performance-benchmark) | Vue 3 port of the same benchmark: 1M records, sorting/filtering/grouping/drill timings, and DOM insights |
+
 ## Supported Frameworks
 
 ### Angular

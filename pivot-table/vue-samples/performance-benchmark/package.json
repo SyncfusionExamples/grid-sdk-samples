@@ -1,0 +1,33 @@
+{
+  "name": "vue-pivot-performance-benchmark",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-base": "35.1.37",
+    "@syncfusion/ej2-data": "35.1.37",
+    "@syncfusion/ej2-fluent2-theme": "35.1.37",
+    "@syncfusion/ej2-vue-buttons": "35.1.37",
+    "@syncfusion/ej2-vue-dropdowns": "35.1.37",
+    "@syncfusion/ej2-vue-pivotview": "35.1.37",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.3",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-vue": "^10.4.0",
+    "globals": "^17.12.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.69.0",
+    "vite": "^8.3.0",
+    "vue-tsc": "^3.1.4"
+  }
+}
