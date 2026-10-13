@@ -1,0 +1,12 @@
+/* Ignore False leaks */
+memory-leak-samples/data.ts:aws-access-token:25713
+memory-leak-samples/data.ts:aws-access-token:25717
+memory-leak-samples/data.ts:aws-access-token:25729
+spec/base/datasource.spec.ts:aws-access-token:57132
+spec/base/datasource.spec.ts:aws-access-token:57146
+spec/base/datasource.spec.ts:aws-access-token:57160
+spec/base/datasource.spec.ts:aws-access-token:57188
+spec/base/datasource.spec.ts:aws-access-token:57202
+spec/base/datasource.spec.ts:aws-access-token:57216
+spec/base/datasource.spec.ts:aws-access-token:57230
+spec/base/datasource.spec.ts:aws-access-token:57244

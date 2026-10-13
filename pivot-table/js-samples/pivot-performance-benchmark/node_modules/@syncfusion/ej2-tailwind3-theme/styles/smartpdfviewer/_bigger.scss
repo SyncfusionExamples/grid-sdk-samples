@@ -1,0 +1,66 @@
+@use 'variables' as *;
+@include export-module('smartpdfviewer-bigger') {
+  
+  .e-bigger .e-control.e-smart-pdfviewer {
+    .e-pv-smart-assistanceview + .e-dlg-container .e-popup.e-control.e-popup-open {
+      @if ($skin-name=='FluentUI') {
+        height: $spv-height-250;
+      }
+
+      @else if ($skin-name=='highcontrast') {
+        height: $spv-height-220;
+      }
+    }
+
+    .e-spv-smart-redcatview .e-treeview .e-list-text{
+      padding: $spv-spacing-9;
+      line-height: $spv-line-height-20;
+      @if $skin-name =='tailwind' or $skin-name == 'tailwind3'{
+        line-height: $spv-line-height-32;
+      }
+    }
+
+    .e-spv-smart-redcatview .e-spv-redact-btn,
+    .e-spv-smart-redcatview .e-spv-scan-button {
+      height: $spv-redact-btn-height-big;
+      @if $skin-name == 'tailwind3'{
+        border-radius: $spv-radius-8;
+      }
+    }
+
+    .e-spv-smart-redcatview .e-spv-redact-button-container {
+      gap: $spv-redact-btn-gap-big;
+    }
+
+    .e-spv-smart-redcatview .e-treeview .e-list-item{
+      @if $skin-name =='tailwind' or $skin-name == 'tailwind3'{
+        padding: $spv-spacing-0;
+      }
+    }
+
+    .e-toolbar .e-toolbar-item.e-overlay .e-icons{
+      @if $skin-name == 'material' or $skin-name == 'material-dark'{
+        font-size: $spv-text-base;
+        width: $spv-width-2em;
+      }
+      @if $skin-name == 'Material3'{
+        margin-bottom: $spv-spacing-4;
+      }
+    }
+
+    .e-aiassistview .e-footer .e-assist-textarea {
+      font-size: $spv-text-sm;
+    }
+
+    .e-pv-toolbar:not(.e-toolbar-pop) .e-spv-btn.e-tbar-btn {
+      width: $spv-width-auto !important;/* stylelint-disable-line declaration-no-important */
+    }
+
+    .e-spv-smart-paste-icon {
+      font-size: $spv-text-base !important;/* stylelint-disable-line declaration-no-important */
+      @if $skin-name == 'Material3' {
+        font-size: $spv-text-lg !important;/* stylelint-disable-line declaration-no-important */
+      }
+    }
+  }
+}

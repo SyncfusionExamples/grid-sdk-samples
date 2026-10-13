@@ -1,0 +1,11 @@
+@use '../base/common/base-variables' as *;
+
+$chart-wizard-skin: $skin-name !default;
+$chart-wizard-border-color: $border-light !default;
+$chart-wizard-list-hover-bg-color: $content-bg-color-hover !default;
+$chart-wizard-list-hover-content-font-color: $content-text-color-hover !default;
+$chart-wizard-list-hover-icon-color: $content-text-color-hover !default;
+$chart-wizard-list-selected-bg-color: $content-bg-color-selected !default;
+$chart-wizard-list-selected-content-font-color: $primary !default;
+$chart-wizard-list-selected-icon-color: unset !default;
+$chart-wizard-chart-bg-color: $content-bg-color !default;

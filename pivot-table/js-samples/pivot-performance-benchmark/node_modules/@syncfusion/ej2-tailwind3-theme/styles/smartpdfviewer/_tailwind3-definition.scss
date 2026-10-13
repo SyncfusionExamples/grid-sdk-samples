@@ -1,0 +1,96 @@
+@use '../base/common/base-variables' as *;
+
+/*! PdfViewer's default definitions and variables */
+$spv-assit-disclaimer-color: $gray-600 !default;
+$spv-assist-toolbar-border: solid $border-light !default;
+$spv-control-border-color: $content-bg-color-alt2 !default;
+$spv-redact-background-color: $gray-950 !default;
+$spv-redact-btn-gap: 8px !default;
+$spv-redact-btn-gap-big: 12px !default;
+$spv-redact-btn-height: 32px !default;
+$spv-redact-btn-height-big: 40px !default;
+$scrollbar-color: $gray-600 !default;
+$scrollbar-background-color: $gray-50 !default;
+$spv-toolbar-popup-icon-padding: 0 16px 0 0 !default;
+
+// Typography Varaiables
+
+// Font Size
+$spv-text-xxs: 10px !default; /* 10px */
+$spv-text-xs: 12px !default; /* 12px */
+$spv-text-sm: 14px !default; /* 14px */
+$spv-text-base: 16px !default; /* 16px */
+$spv-text-lg: 18px !default; /* 18px */
+$spv-text-xl: 20px !default; /* 20px */
+
+// Font Icon Size
+$spv-font-icon-32: 32px !default; /* 32px */
+
+// Line Height
+$spv-line-height-16: 16px !default; /* 16px */
+$spv-line-height-20: 20px !default; /* 20px */
+$spv-line-height-22: 22px !default; /* 22px */
+$spv-line-height-24: 24px !default; /* 24px */
+$spv-line-height-32: 32px !default; /* 32px */
+$spv-line-height-40: 40px !default; /* 40px */
+
+// Spacing
+$spv-spacing-0: 0 !default;
+$spv-spacing-1: 1px !default;
+$spv-spacing-2: 2px !default;
+$spv-spacing-3: 3px !default;
+$spv-spacing-4: 4px !default;
+$spv-spacing-5: 5px !default;
+$spv-spacing-6: 6px !default;
+$spv-spacing-7: 7px !default;
+$spv-spacing-8: 8px !default;
+$spv-spacing-9: 9px !default;
+$spv-spacing-10: 10px !default;
+$spv-spacing-11: 11px !default;
+$spv-spacing-12: 12px !default;
+$spv-spacing-13: 13px !default;
+$spv-spacing-14: 14px !default;
+$spv-spacing-15: 15px !default;
+$spv-spacing-16: 16px !default;
+$spv-spacing-18: 18px !default;
+$spv-spacing-20: 20px !default;
+$spv-spacing-56: 56px !default;
+
+// Border width
+$spv-border-0: $border-0 !default;
+$spv-border-1: $border-1 !default;
+$spv-border-2: $border-2 !default;
+$spv-border-3: $border-3 !default;
+$spv-border-4: $border-4 !default;
+$spv-border-5: $border-5 !default;
+$spv-border-6: $border-6 !default;
+$spv-border-7: $border-7 !default;
+
+// Radius
+$spv-radius-0: $radius-0 !default;
+$spv-radius-2: $radius-2 !default;
+$spv-radius-4: $radius-4 !default;
+$spv-radius-6: $radius-6 !default;
+$spv-radius-8: $radius-8 !default;
+$spv-radius-12: $radius-12 !default;
+$spv-radius-16: $radius-16 !default;
+$spv-radius-20: $radius-20 !default;
+$spv-radius-48: $radius-48 !default;
+
+//Width
+$spv-width-p100: 100% !default; /* 100% */
+$spv-width-3: 3px !default; /* 3px */
+$spv-width-96: 96px !default; /* 96px */
+$spv-width-auto: auto !default; /* auto */
+$spv-width-2em: 2em !default; /* 2em */
+$spv-width-95p: 95% !default; /* 95% */
+$spv-width-198: 198px !default; /* 198px */
+$spv-width-fit: fit-content !default; /* fit-content */
+
+//Height
+$spv-height-p100: 100% !default; /* 100% */
+$spv-height-32: 32px !default; /* 32px */
+$spv-height-240: 240px !default; /* 240px */
+$spv-height-250: 250px !default; /* 250px */
+$spv-height-500: 500px !default; /* 500px */
+$spv-height-220: 220px !default; /* 220px */

@@ -1,0 +1,110 @@
+@use '../variables' as *;
+@include export-module('chart-wizard-tailwind3-icons') {
+
+  .e-chart-wizard-export-icon::before {
+    content: '\e72e';
+  }
+
+  .e-chart-wizard-print::before {
+    content: '\e75d';
+  }
+
+  .e-chart-wizard-jpeg::before {
+    content: '\e94b';
+  }
+
+  .e-chart-wizard-png::before {
+    content: '\e7ee';
+  }
+
+  .e-chart-wizard-svg::before {
+    content: '\e7cf';
+  }
+
+  .e-chart-wizard-pdf::before {
+    content: '\e700';
+  }
+
+  .e-chart-wizard-xlsx::before {
+    content: '\e781';
+  }
+
+  .e-chart-wizard-csv::before {
+    content: '\e7ba';
+  }
+
+  #{&}.e-chart-wizard-context-menu {
+
+    .e-chart-wizard-bar-chart-icon::before {
+      content: '\e86c';
+    }
+
+    .e-chart-wizard-bar-icon::before {
+      content: '\e86c';
+    }
+
+    .e-chart-wizard-stacking-bar-icon::before {
+      content: '\e866';
+    }
+
+    .e-chart-wizard-stacking-bar-100-icon::before {
+      content: '\e86d';
+    }
+
+    .e-chart-wizard-pie-icon::before {
+      content: '\e869';
+    }
+
+    .e-chart-wizard-column-chart-icon::before {
+      content: '\e86a';
+    }
+
+    .e-chart-wizard-column-icon::before {
+      content: '\e86a';
+    }
+
+    .e-chart-wizard-stacking-column-icon::before {
+      content: '\e875';
+    }
+
+    .e-chart-wizard-stacking-column-100-icon::before {
+      content: '\e86f';
+    }
+
+    .e-chart-wizard-line-chart-icon::before {
+      content: '\e86e';
+    }
+
+    .e-chart-wizard-line-icon::before {
+      content: '\e86e';
+    }
+
+    .e-chart-wizard-stacking-line-icon::before {
+      content: '\e867';
+    }
+
+    .e-chart-wizard-stacking-line-100-icon::before {
+      content: '\e870';
+    }
+
+    .e-chart-wizard-area-chart-icon::before {
+      content: '\e873';
+    }
+
+    .e-chart-wizard-area-icon::before {
+      content: '\e873';
+    }
+
+    .e-chart-wizard-stacking-area-icon::before {
+      content: '\e871';
+    }
+
+    .e-chart-wizard-stacking-area-100-icon::before {
+      content: '\e86b';
+    }
+
+    .e-chart-wizard-scatter-icon::before {
+      content: '\e94c';
+    }
+  }
+}

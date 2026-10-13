@@ -1,0 +1,5 @@
+@use '../base/common/base-variables' as *;
+
+$signature-border: 1px solid !default;
+$signature-border-color: $dialog-border !default;
+$signature-background-color: $content-bg-color !default;

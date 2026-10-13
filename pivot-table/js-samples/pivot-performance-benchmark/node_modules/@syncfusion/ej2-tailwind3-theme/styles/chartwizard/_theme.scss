@@ -1,0 +1,58 @@
+@use 'variables' as *;
+@include export-module('chart-wizard-theme') {
+
+  #{&}.e-chart-wizard-context-menu {
+    background-color: $chart-wizard-chart-bg-color;
+    
+    .e-chart-wizard-container {
+      border: 1px solid $chart-wizard-border-color;
+    }
+
+    .e-chart-wizard-tab-container {
+      border-left: 1px solid $chart-wizard-border-color;
+      .e-tab.e-focused {
+        box-shadow: none;
+      }
+    }
+
+    .e-tab {
+      .e-tab-header {
+        border-bottom: 0;
+      }
+
+      .e-accordion {
+        border: 0;
+      }
+    }
+
+    @if $chart-wizard-skin =='fluent2' {
+      .e-accordion .e-acrdn-item.e-select {
+        border-bottom: 1px solid $chart-wizard-border-color;
+      }
+    }
+
+    .e-chart-wizard-list:hover {
+      background-color: $chart-wizard-list-hover-bg-color;
+      color: $chart-wizard-list-hover-content-font-color;
+
+      .e-icons {
+        color: $chart-wizard-list-hover-icon-color;
+      }
+    }
+
+    .e-chart-wizard-list.e-chart-wizard-list-selected {
+      background-color: $chart-wizard-list-selected-bg-color;
+      color: $chart-wizard-list-selected-content-font-color;
+
+      .e-icons {
+        color: $chart-wizard-list-selected-icon-color;
+      }
+    }
+
+    &.e-rtl {
+      .e-chart-wizard-tab-container {
+        border: 0;
+      }
+    }
+  }
+}

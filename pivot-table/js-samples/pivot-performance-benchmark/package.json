@@ -1,0 +1,19 @@
+{
+  "name": "pivot-table-performance-benchmark",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-base": "^34.2.6",
+    "@syncfusion/ej2-pivotview": "^34.2.6",
+    "@syncfusion/ej2-tailwind3-theme": "^34.2.6"
+  },
+  "devDependencies": {
+    "vite": "^8.2.2"
+  }
+}
