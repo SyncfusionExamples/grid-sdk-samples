@@ -1,75 +1,43 @@
-# Essential JS 2 QuickStart
+# Syncfusion Pivot Table Performance Benchmark
 
-This project is a skeleton application used to create [Essential JS 2](https://www.syncfusion.com/products/essential-js2) web application.
+## Overview
 
->This application uses the latest version of the [webpack-cli](https://webpack.js.org/api/cli/#commands). It requires node `v14.15.0` or higher.
+This standalone TypeScript sample benchmarks the Syncfusion Pivot Table against a generated dataset of one million university records. It helps evaluate how the component performs under different data-handling modes such as virtual scrolling, data compression, and paging.
 
-## Getting Started
+The sample measures key interactions including initial load time, column and row sorting, filtering, grouping, drill-up and drill-down operations, and DOM rendering impact. You can switch benchmark modes and compare the resulting performance metrics in the panel.
 
-To get started you need to clone the `ej2-quickstart` repository and navigate to `ej2-quickstart` location.
+## Key Features
 
-```
-git clone https://github.com/syncfusion/ej2-quickstart.git quickstart
-cd quickstart
-```
+- One million generated records for large-data performance tests
+- Benchmark modes for virtual scrolling, data compression, and paging
+- Side-by-side performance metrics for sorting, filtering, grouping, and drill operations
+- Reset support to clear loaded data and metrics before rerunning a test
+- TypeScript + Webpack sample setup using Syncfusion Pivot Table components
 
-## Installing
+## Run the sample
 
-We can get all the Essential JS 2 components in a single npm package [`ej2`](https://www.npmjs.com/package/@syncfusion/ej2).
-
-We already configure the required packages in the `package.json` file.
-
-You can run the below command to install all dependent packages related to this seed project.
-
-```
+```bash
 npm install
+npm start
 ```
 
-## Testing
+Open the local URL printed by the webpack dev server, choose a benchmark mode, and click **Load Data**. The sample includes several performance scenarios that render large datasets with different optimization strategies.
 
-This application is preconfigured with End-to-End testing and the test case is written in Jasmine.
+Use **Reset** to clear the loaded dataset and metrics before running another benchmark.
 
-We run the test scripts with [Protractor](http://www.protractortest.org/#/) end-to-end test runner. The test case file can be found in the `e2e` folder.
+To create a production build, run:
 
-Protractor can interact with our web application and verify the test scripts.
-
-We have to install WebDriver and also need to ensure it is updated. Open a separate terminal and run the below npm script.
-
-```
-npm run update-webdriver
+```bash
+npm run build
 ```
 
-Open another terminal and run the below npm script. It will start web server to serve our application.
+## Sample structure
 
-```
-npm run serve
-```
+- `src/app/app.ts` — benchmark UI, mode selection, and metrics logic
+- `src/app/datasource.ts` — generated test data used for the performance scenarios
+- `src/styles/styles.css` — layout and styling for the benchmark panel and toolbar
 
-Once the web server is up and running, we can run the end-to-end tests using the below npm script
+## Related resources
 
-```
-npm run test
-```
-
-> **Note:** Since Protractor is using the Selenium Standalone Server, the Java Development Kit (JDK) need to be installed in your local machine.
-
-If JDK is not installed in your local machine, you can download it from [here](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-
-## Running
-
-The application is configured with [webpack-dev-server](https://webpack.js.org/configuration/dev-server/#devserver), so it will serve the web application in your default browser.
-
-We have used [Webpack](https://github.com/webpack/webpack) for module loading.
-
-You can use the below npm script to run the web application.
-
-```
-npm run start
-```
-
-## Resources
-
-You can also refer the below resources to know more details about Essential JS 2 components.
-
-* [Pure JS Demos](http://ej2.syncfusion.com/demos/)
-* [Pure JS Documentation](http://ej2.syncfusion.com/documentation/)
+- [Syncfusion Pivot Table documentation](https://ej2.syncfusion.com/javascript/documentation/pivotview/getting-started)
+- [Syncfusion JavaScript UI components](https://www.syncfusion.com/javascript-ui-components)
