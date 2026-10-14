@@ -1,59 +1,43 @@
-# PerformanceBenchmark
+# Syncfusion Pivot Table Performance Benchmark
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.26.
+## Overview
 
-## Development server
+This standalone Angular sample benchmarks the Syncfusion Pivot Table against a generated dataset of one million university records. It helps evaluate how the component performs under different data-handling modes such as virtual scrolling, data compression, and paging.
 
-To start a local development server, run:
+The sample measures key interactions including initial load time, column and row sorting, filtering, grouping, drill-up and drill-down operations, and DOM rendering impact. You can switch benchmark modes and compare the resulting performance metrics in the panel.
 
-```bash
-ng serve
-```
+## Key Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- One million generated records for large-data performance tests
+- Benchmark modes for virtual scrolling, data compression, and paging
+- Side-by-side performance metrics for sorting, filtering, grouping, and drill operations
+- Reset support to clear loaded data and metrics before rerunning a test
+- Angular + TypeScript sample setup using Syncfusion Pivot Table components
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Run the sample
 
 ```bash
-ng generate --help
+npm install
+npm start
 ```
 
-## Building
+Open the local URL printed by the Angular CLI, choose a benchmark mode, and click **Load Data**. The sample includes several performance scenarios that render large datasets with different optimization strategies.
 
-To build the project run:
+Use **Reset** to clear the loaded dataset and metrics before running another benchmark.
+
+To create a production build, run:
 
 ```bash
-ng build
+npm run build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Sample structure
 
-## Running unit tests
+- `src/app/app.ts` — benchmark UI, mode selection, and metrics logic
+- `src/app/datasource.ts` — generated test data used for the performance scenarios
+- `src/app/app.css` — layout and styling for the benchmark panel and toolbar
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Related resources
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Syncfusion Pivot Table documentation](https://ej2.syncfusion.com/angular/documentation/pivotview/getting-started)
+- [Syncfusion Angular UI components](https://www.syncfusion.com/angular-ui-components)
