@@ -294,6 +294,17 @@ function handleLoad() {
     if (loaded) return;
     var pivotData = scrollMode === 'compression' ? UniversityDataCompressed : UniversityData;
 
+    if (scrollMode === 'virtual') {
+        pivotObj.enableVirtualization = true;
+        pivotObj.enablePaging = false;
+    } else if (scrollMode === 'paging') {
+        pivotObj.enableVirtualization = false;
+        pivotObj.enablePaging = true;
+    } else {
+        pivotObj.enableVirtualization = false;
+        pivotObj.enablePaging = false;
+    }
+
     // start timing BEFORE binding
     isInit = true;
     initialLoadTime = new Date().getTime();
@@ -337,6 +348,7 @@ function resetMetrics() {
 }
 
 function applyMode() {
+    debugger
     // reconfigure pivot for the current benchmark mode
     pivotObj.enableVirtualization = scrollMode === 'virtual' || scrollMode === 'compression';
     pivotObj.allowDataCompression = scrollMode === 'compression';

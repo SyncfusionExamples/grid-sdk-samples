@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model performance_benchmark.Pages.IndexModel
 @{
     ViewData["Title"] = "PivotTable Performance Sample";
@@ -25,17 +25,17 @@
     <div class="outer-content">
         <div class="pivot-performance-container">
             <ejs-pivotview id="PivotView" width="100%" height="100%"
-                           showFieldList="true" exportAllPages="false" maxNodeLimitInMemberEditor="50"
-                           showGroupingBar="true" allowGrouping="true" allowDeferLayoutUpdate="true"
-                           allowDrillThrough="true" allowExcelExport="true" allowNumberFormatting="true"
-                           allowConditionalFormatting="true" allowPdfExport="true" showToolbar="true"
-                           allowCalculatedField="true" enableFieldSearching="true"
-                           toolbar="@("Grid,Chart,Export,SubTotal,GrandTotal,Formatting,FieldList")">
+                showFieldList="true" exportAllPages="false" maxNodeLimitInMemberEditor="50"
+                showGroupingBar="true" allowGrouping="true" allowDeferLayoutUpdate="true"
+                allowDrillThrough="true" allowExcelExport="true" allowNumberFormatting="true"
+                allowConditionalFormatting="true" allowPdfExport="true" showToolbar="true"
+                allowCalculatedField="true" enableFieldSearching="true"
+                toolbar="@("Grid,Chart,Export,SubTotal,GrandTotal,Formatting,FieldList")">
                 <e-displayOption view="Both"></e-displayOption>
                 <e-gridSettings columnWidth="120" rowHeight="36"></e-gridSettings>
                 <e-chartSettings title="Top Universities Analysis"></e-chartSettings>
                 <e-datasourcesettings enableSorting="true" allowLabelFilter="true" allowValueFilter="true"
-                                      showHeaderWhenEmpty="false" expandAll="false" emptyCellsTextContent="-">
+                    showHeaderWhenEmpty="false" expandAll="false" emptyCellsTextContent="-">
                     <e-rows>
                         <e-field name="rank_display" caption="Rank"></e-field>
                         <e-field name="university" caption="University"></e-field>
@@ -58,19 +58,19 @@
                     </e-formatsettings>
                     <e-conditionalformatsettings>
                         <e-format measure="international_students" value1="1000" value2="5000" conditions="Between"
-                                   applyGrandTotals="false">
+                            applyGrandTotals="false">
                             <e-fieldlist-style backgroundColor="#FFA500" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
                         </e-format>
                         <e-format measure="international_students" value1="8000" conditions="GreaterThan"
-                                   applyGrandTotals="false">
+                            applyGrandTotals="false">
                             <e-fieldlist-style backgroundColor="#0C860C" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
                         </e-format>
                         <e-format measure="faculty_count" value1="500" value2="2000" conditions="Between"
-                                   applyGrandTotals="false">
+                            applyGrandTotals="false">
                             <e-fieldlist-style backgroundColor="#FFA500" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
                         </e-format>
                         <e-format measure="faculty_count" value1="4000" conditions="GreaterThan"
-                                   applyGrandTotals="false">
+                            applyGrandTotals="false">
                             <e-fieldlist-style backgroundColor="#0C860C" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
                         </e-format>
                     </e-conditionalformatsettings>
