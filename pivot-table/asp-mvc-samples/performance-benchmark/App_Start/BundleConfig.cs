@@ -1,4 +1,4 @@
-﻿using System.Web;
+using System.Web;
 using System.Web.Optimization;
 
 namespace PivotTableSample
@@ -11,6 +11,9 @@ namespace PivotTableSample
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.min.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/performance-benchmark").Include(
+                      "~/Content/performance-benchmark.css"));
         }
     }
 }
