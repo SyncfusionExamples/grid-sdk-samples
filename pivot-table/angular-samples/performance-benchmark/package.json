@@ -17,6 +17,11 @@
     "@angular/forms": "^21.2.0",
     "@angular/platform-browser": "^21.2.0",
     "@angular/router": "^21.2.0",
+    "@syncfusion/ej2-angular-buttons": "35.1.37",
+    "@syncfusion/ej2-angular-dropdowns": "35.1.37",
+    "@syncfusion/ej2-angular-pivotview": "35.1.37",
+    "@syncfusion/ej2-base": "35.1.37",
+    "@syncfusion/ej2-fluent2-theme": "35.1.37",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
