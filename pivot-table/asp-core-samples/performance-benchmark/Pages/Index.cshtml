@@ -1,0 +1,215 @@
+﻿@page
+@model performance_benchmark.Pages.IndexModel
+@{
+    ViewData["Title"] = "PivotTable Performance Sample";
+}
+
+<link rel="stylesheet" href="~/css/performance-benchmark.css" asp-append-version="false" />
+
+<div class="app-body">
+    <div class="top-toolbar">
+        <div class="toolbar-group">
+            <div class="toolbar-column">
+                <span class="toolbar-label">Benchmark Mode</span>
+                <input type="text" id="mode-dropdown" tabindex="1" />
+            </div>
+        </div>
+
+        <div class="vertical-separator" aria-hidden="true"></div>
+
+        <div class="toolbar-actions">
+            <button id="load-btn" class="e-primary">Load Data</button>
+            <button id="reset-btn" class="reset-button">Reset</button>
+        </div>
+    </div>
+    <div class="outer-content">
+        <div class="pivot-performance-container">
+            <ejs-pivotview id="PivotView" width="100%" height="100%"
+                showFieldList="true" exportAllPages="false" maxNodeLimitInMemberEditor="50"
+                showGroupingBar="true" allowGrouping="true" allowDeferLayoutUpdate="true"
+                allowDrillThrough="true" allowExcelExport="true" allowNumberFormatting="true"
+                allowConditionalFormatting="true" allowPdfExport="true" showToolbar="true"
+                allowCalculatedField="true" enableFieldSearching="true"
+                toolbar="@("Grid,Chart,Export,SubTotal,GrandTotal,Formatting,FieldList")">
+                <e-displayOption view="Both"></e-displayOption>
+                <e-gridSettings columnWidth="120" rowHeight="36"></e-gridSettings>
+                <e-chartSettings title="Top Universities Analysis"></e-chartSettings>
+                <e-datasourcesettings enableSorting="true" allowLabelFilter="true" allowValueFilter="true"
+                    showHeaderWhenEmpty="false" expandAll="false" emptyCellsTextContent="-">
+                    <e-rows>
+                        <e-field name="rank_display" caption="Rank"></e-field>
+                        <e-field name="university" caption="University"></e-field>
+                    </e-rows>
+                    <e-columns>
+                        <e-field name="region" caption="Region"></e-field>
+                        <e-field name="country" caption="Country"></e-field>
+                    </e-columns>
+                    <e-values>
+                        <e-field name="international_students" caption="Students"></e-field>
+                        <e-field name="faculty_count" caption="Faculty"></e-field>
+                        <e-field name="score" caption="Score"></e-field>
+                    </e-values>
+                    <e-filters>
+                        <e-field name="type" caption="University Type"></e-field>
+                    </e-filters>
+                    <e-formatsettings>
+                        <e-field name="international_students" format="N0"></e-field>
+                        <e-field name="faculty_count" format="N0"></e-field>
+                    </e-formatsettings>
+                    <e-conditionalformatsettings>
+                        <e-format measure="international_students" value1="1000" value2="5000" conditions="Between"
+                            applyGrandTotals="false">
+                            <e-fieldlist-style backgroundColor="#FFA500" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
+                        </e-format>
+                        <e-format measure="international_students" value1="8000" conditions="GreaterThan"
+                            applyGrandTotals="false">
+                            <e-fieldlist-style backgroundColor="#0C860C" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
+                        </e-format>
+                        <e-format measure="faculty_count" value1="500" value2="2000" conditions="Between"
+                            applyGrandTotals="false">
+                            <e-fieldlist-style backgroundColor="#FFA500" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
+                        </e-format>
+                        <e-format measure="faculty_count" value1="4000" conditions="GreaterThan"
+                            applyGrandTotals="false">
+                            <e-fieldlist-style backgroundColor="#0C860C" color="white" fontFamily="Tahoma" fontSize="12px"></e-fieldlist-style>
+                        </e-format>
+                    </e-conditionalformatsettings>
+                </e-datasourcesettings>
+            </ejs-pivotview>
+        </div>
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-head-text">Performance Metrics</span>
+            </div>
+            <div class="metrics-body metrics-body--full">
+                <div class="big-card">
+                    <div class="big-left">
+                        <span class="big-label">Initial Load Time</span>
+                    </div>
+                    <div class="big-right">
+                        <span class="big-value" id="metric-initial-load">&mdash;</span>
+                        <span class="big-chip">s</span>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Sorting</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Sort</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-sort">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Sort</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-sort">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Filtering</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Filter</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-filter">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Filter</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-filter">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Clear Filtering</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Clear</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-clear">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Clear</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-clear">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Grouping</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Applied Group</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-group">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Removed Group</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-ungroup">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Drill</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Drill Down</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-drill-down">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Drill Up</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-drill-up">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">DOM Insights</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Rows in DOM</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-rows-in-dom">0</div>
+                                <div class="mini-unit mini-unit--muted">rows</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Total Dataset</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-total-dataset">0</div>
+                                <div class="mini-unit mini-unit--muted">rows</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/performance-benchmark.js"></script>
+}

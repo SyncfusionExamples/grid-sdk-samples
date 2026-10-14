@@ -1,0 +1,30 @@
+<div class="app-body">
+  <app-benchmark-toolbar #toolbar
+    [scrollMode]="scrollMode"
+    (modeChange)="onModeChange($event)"
+    (load)="handleLoad()"
+    (reset)="resetMetrics()">
+  </app-benchmark-toolbar>
+  <div class="outer-content">
+    <div class="pivot-performance-container">
+      <ejs-pivotview #pivotview id='PivotView' [dataSourceSettings]="dataSourceSettings" width='100%' height='100%'
+        [showFieldList]="true" [exportAllPages]="false" [maxNodeLimitInMemberEditor]="50"
+        [showGroupingBar]="true" [allowGrouping]="true"
+        [enableVirtualization]="scrollMode === 'virtual' || scrollMode === 'compression'"
+        [allowDataCompression]="scrollMode === 'compression'" [allowDeferLayoutUpdate]="true"
+        [allowDrillThrough]="true" [enablePaging]="scrollMode === 'paging'"
+        [pageSettings]="scrollMode === 'paging' ? pageSettings : emptyPageSettings"
+        [pagerSettings]="scrollMode === 'paging' ? pagerSettings : emptyPagerSettings"
+        [gridSettings]="gridSettings" [allowExcelExport]="true" [allowNumberFormatting]="true"
+        [allowConditionalFormatting]="true" [allowPdfExport]="true" [showToolbar]="true"
+        [allowCalculatedField]="true" [displayOption]="displayOption" [toolbar]="toolbarOptions"
+        (dataBound)="onDataBound()" (actionBegin)="actionBegin($event)"
+        (actionComplete)="actionComplete($event)" (memberFiltering)="memberFiltering($event)"
+        (memberEditorOpen)="memberEditorOpen($event)" (enginePopulating)="enginePopulating()"
+        (created)="created()" (load)="load($event)" [chartSettings]="chartSettings"
+        [enableFieldSearching]="true">
+      </ejs-pivotview>
+    </div>
+    <app-metrics-panel #metricsPanel></app-metrics-panel>
+  </div>
+</div>
