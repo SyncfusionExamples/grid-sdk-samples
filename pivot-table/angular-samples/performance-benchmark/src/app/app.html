@@ -18,7 +18,7 @@
         [gridSettings]="gridSettings" [allowExcelExport]="true" [allowNumberFormatting]="true"
         [allowConditionalFormatting]="true" [allowPdfExport]="true" [showToolbar]="true"
         [allowCalculatedField]="true" [displayOption]="displayOption" [toolbar]="toolbarOptions"
-        (dataBound)="onDataBound($event)" (actionBegin)="actionBegin($event)"
+        (dataBound)="onDataBound()" (actionBegin)="actionBegin($event)"
         (actionComplete)="actionComplete($event)" (memberFiltering)="memberFiltering($event)"
         (memberEditorOpen)="memberEditorOpen($event)" (enginePopulating)="enginePopulating()"
         (created)="created()" (load)="load($event)" [chartSettings]="chartSettings"

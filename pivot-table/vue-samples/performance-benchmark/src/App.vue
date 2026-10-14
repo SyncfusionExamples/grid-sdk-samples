@@ -59,7 +59,7 @@
           :memberFiltering="memberFiltering"
           :memberEditorOpen="memberEditorOpen"
           :enginePopulating="enginePopulating"
-          :created="created"
+          :created="onCreated"
           :load="load"
           :chartSettings="chartSettings"
           :enableFieldSearching="true">
@@ -240,8 +240,8 @@ export default {
       isInit: true,
       loaded: false,
       initialLoadTime: 0,
-      _pendingActionType: '',
-      _actionStartTime: 0,
+      pendingActionType: '',
+      actionStartTime: 0,
       scrollMode: 'virtual',
       scrollModeItems: [
         { text: 'Virtual Scroll', value: 'virtual' },
@@ -384,7 +384,7 @@ export default {
     formatSeconds(milliseconds) {
       return milliseconds > 0 ? (milliseconds / 1000).toFixed(3) : '—';
     },
-    created() {
+    onCreated() {
       this.initialLoadTime = new Date().getTime();
     },
     load(args) {
@@ -395,11 +395,11 @@ export default {
     actionBegin(args) {
       const trackable = ['Sort field', 'Drill down', 'Drill up'];
       if (trackable.includes(args.actionName)) {
-        this._actionStartTime = new Date().getTime();
+        this.actionStartTime = new Date().getTime();
         if (args.actionName === 'Sort field') {
-          this._pendingActionType = args.actionName + ' - ' + args.fieldInfo.axis;
+          this.pendingActionType = args.actionName + ' - ' + args.fieldInfo.axis;
         } else {
-          this._pendingActionType = args.actionName;
+          this.pendingActionType = args.actionName;
         }
       }
     },
@@ -408,9 +408,9 @@ export default {
       const columns = args.dataSourceSettings.columns.map((c) => c.name);
       const rows = args.dataSourceSettings.rows.map((c) => c.name);
       if (columns.includes(fieldName)) {
-        this._pendingActionType = "Member filtering - column";
+        this.pendingActionType = "Member filtering - column";
       } else if (rows.includes(fieldName)) {
-        this._pendingActionType = "Member filtering - row";
+        this.pendingActionType = "Member filtering - row";
       }
     },
     memberEditorOpen(args) {
@@ -419,9 +419,9 @@ export default {
       const columns = pivot.dataSourceSettings.columns.map((c) => c.name);
       const rows = pivot.dataSourceSettings.rows.map((c) => c.name);
       if (columns.includes(fieldName)) {
-        this._pendingActionType = "Member editor open - column";
+        this.pendingActionType = "Member editor open - column";
       } else if (rows.includes(fieldName)) {
-        this._pendingActionType = "Member editor open - row";
+        this.pendingActionType = "Member editor open - row";
       }
     },
     enginePopulating() {
@@ -433,8 +433,8 @@ export default {
         "Grouping field",
         "Ungrouping field"
       ];
-      if (trackableActions.includes(this._pendingActionType)) {
-        this._actionStartTime = new Date().getTime();
+      if (trackableActions.includes(this.pendingActionType)) {
+        this.actionStartTime = new Date().getTime();
       }
     },
     onModeChange(e) {
@@ -469,8 +469,8 @@ export default {
       }
       this.isInit = true;
       this.initialLoadTime = 0;
-      this._pendingActionType = '';
-      this._actionStartTime = 0;
+      this.pendingActionType = '';
+      this.actionStartTime = 0;
       pivot.refresh();
       this.metrics = Object.assign({}, EMPTY_METRICS);
       this.loaded = false;
@@ -507,14 +507,14 @@ export default {
       // may run after dataBound for the same user action and needs those values.
       this.updateDOMMetrics();
     },
-    actionComplete(_args) {
-      if (!this._pendingActionType || !this._actionStartTime) {
+    actionComplete() {
+      if (!this.pendingActionType || !this.actionStartTime) {
         return;
       }
-      const time = new Date().getTime() - this._actionStartTime;
-      const type = this._pendingActionType;
-      this._pendingActionType = '';
-      this._actionStartTime = 0;
+      const time = new Date().getTime() - this.actionStartTime;
+      const type = this.pendingActionType;
+      this.pendingActionType = '';
+      this.actionStartTime = 0;
 
       if (type === 'Sort field - columns') {
         this.metrics.columnsSortingTime = time;
@@ -552,9 +552,9 @@ export default {
         const self = this;
         menu.select = function (args) {
           if (args.element.textContent === 'Group') {
-            self._pendingActionType = 'Grouping field';
+            self.pendingActionType = 'Grouping field';
           } else if (args.element.textContent === 'Ungroup') {
-            self._pendingActionType = 'Ungrouping field';
+            self.pendingActionType = 'Ungrouping field';
           }
           if (originalSelect) {
             originalSelect(args);
@@ -567,5 +567,4 @@ export default {
 </script>
 
 <style>
-@import '../node_modules/@syncfusion/ej2-tailwind3-theme/styles/pivotview/index.css';
 </style>

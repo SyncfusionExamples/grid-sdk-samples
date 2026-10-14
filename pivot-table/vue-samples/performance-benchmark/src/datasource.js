@@ -1,31 +1,31 @@
-let universities: string[] = [
+let universities = [
   'MIT', 'Stanford University', 'Harvard University', 'Oxford University',
   'Cambridge University', 'Caltech', 'UCL', 'ETH Zurich', 'Imperial College London'
 ];
-let countries: string[] = [
+let countries = [
   'United States', 'United Kingdom', 'Germany', 'Canada', 'Australia', 'India'
 ];
-let cities: string[] = [
+let cities = [
   'New York', 'London', 'Berlin', 'Toronto', 'Sydney', 'Chennai'
 ];
-let regions: string[] = [
+let regions = [
   'North America', 'Europe', 'Asia', 'Oceania'
 ];
 
-let types: string[] = ['Public', 'Private'];
-let research: string[] = ['Very High', 'High'];
-let sizes: string[] = ['S', 'M', 'L', 'XL'];
+let types = ['Public', 'Private'];
+let research = ['Very High', 'High'];
+let sizes = ['S', 'M', 'L', 'XL'];
 
-let ratios: number[] = [3, 4, 5, 6, 7, 8, 9, 10];
-let students: number[] = [1000, 2000, 3000, 5000, 8000, 12000];
-let faculty: number[] = [500, 1000, 2000, 4000, 7000];
+let ratios = [3, 4, 5, 6, 7, 8, 9, 10];
+let students = [1000, 2000, 3000, 5000, 8000, 12000];
+let faculty = [500, 1000, 2000, 4000, 7000];
 
-export const getPerformanceData: Function = (count: number, isDataCompression: boolean = false) => {
-  let result: Object[] = [];
+export const getPerformanceData = (count, isDataCompression = false) => {
+  let result = [];
   let index = 1;
 
   for (let i = 0; i < count; i++) {
-    let rankPadded: string | number;
+    let rankPadded;
 
     if (isDataCompression) {
       // Data compression format: padded strings cycling 1-1000
@@ -57,10 +57,9 @@ export const getPerformanceData: Function = (count: number, isDataCompression: b
       }
     }
 
-    const universityIdx = Math.floor(Math.random() * universities.length);
-    const record: any = {
+    const record = {
       rank_display: isDataCompression ? rankPadded : i + 1,
-      university: universities[universityIdx],
+      university: universities[Math.floor(Math.random() * universities.length)],
       year: 2017,
       score: Number((100 - Math.random() * 60).toFixed(2)),
       country: countries[Math.floor(Math.random() * countries.length)],

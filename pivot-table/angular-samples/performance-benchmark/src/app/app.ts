@@ -7,7 +7,7 @@ import {
   ConditionalFormattingService, NumberFormattingService, PivotViewComponent,
   IDataOptions, PivotActionCompleteEventArgs
 } from '@syncfusion/ej2-angular-pivotview';
-import { DropDownListComponent, DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
+import { DropDownListModule } from '@syncfusion/ej2-angular-dropdowns';
 import { ButtonModule } from '@syncfusion/ej2-angular-buttons';
 import { getPerformanceData } from './datasource';
 
@@ -47,8 +47,197 @@ const EMPTY_METRICS: MetricsData = {
 };
 
 @Component({
+  selector: 'app-section',
+  imports: [],
+  template: `
+    <div class="section section--primary">
+      <div class="section-label section-label--primary">{{ label }}</div>
+      <div class="section-row"><ng-content></ng-content></div>
+    </div>
+  `
+})
+export class SectionComponent {
+  @Input() public label: string = '';
+}
+
+@Component({
+  selector: 'app-mini-card',
+  imports: [],
+  template: `
+    <div class="mini-card mini-card--primary">
+      <div class="mini-label">{{ label }}</div>
+      <div class="mini-values">
+        <div class="mini-value mini-value--primary">{{ value }}</div>
+        <div class="mini-unit mini-unit--muted">{{ unit }}</div>
+      </div>
+    </div>
+  `
+})
+export class MiniCardComponent {
+  @Input() public label: string = '';
+  @Input() public value: string = '';
+  @Input() public unit: string = '';
+}
+
+@Component({
+  selector: 'app-big-card',
+  imports: [],
+  template: `
+    <div class="big-card">
+      <div class="big-left">
+        <span class="big-label">{{ label }}</span>
+      </div>
+      <div class="big-right">
+        <span class="big-value">{{ value }}</span>
+        <span class="big-chip">{{ unit }}</span>
+      </div>
+    </div>
+  `
+})
+export class BigCardComponent {
+  @Input() public label: string = '';
+  @Input() public value: string = '';
+  @Input() public unit: string = '';
+}
+
+/**
+ * Isolated metrics panel: updates here re-render ONLY this panel,
+ * so the PivotView is never reconfigured for benchmark metrics.
+ */
+@Component({
+  selector: 'app-metrics-panel',
+  imports: [SectionComponent, MiniCardComponent, BigCardComponent],
+  template: `
+    <div class="panel">
+      <div class="panel-head">
+        <span class="panel-head-text">Performance Metrics</span>
+      </div>
+      <div class="metrics-body metrics-body--full">
+        <app-big-card label="Initial Load Time" [value]="formatSeconds(initialLoadTime)" unit="s"></app-big-card>
+        <app-section label="Sorting">
+          <app-mini-card label="Column Sort" [value]="formatSeconds(columnsSortingTime)" unit="s"></app-mini-card>
+          <app-mini-card label="Row Sort" [value]="formatSeconds(rowsSortingTime)" unit="s"></app-mini-card>
+        </app-section>
+        <app-section label="Filtering">
+          <app-mini-card label="Column Filter" [value]="formatSeconds(filteringTimeColumn)" unit="s"></app-mini-card>
+          <app-mini-card label="Row Filter" [value]="formatSeconds(filteringTimeRow)" unit="s"></app-mini-card>
+        </app-section>
+        <app-section label="Clear Filtering">
+          <app-mini-card label="Column Clear" [value]="formatSeconds(clearFilteringTimeColumn)" unit="s"></app-mini-card>
+          <app-mini-card label="Row Clear" [value]="formatSeconds(clearFilteringTimeRow)" unit="s"></app-mini-card>
+        </app-section>
+        <app-section label="Grouping">
+          <app-mini-card label="Applied Group" [value]="formatSeconds(groupingTime)" unit="s"></app-mini-card>
+          <app-mini-card label="Removed Group" [value]="formatSeconds(ungroupingTime)" unit="s"></app-mini-card>
+        </app-section>
+        <app-section label="Drill">
+          <app-mini-card label="Drill Down" [value]="formatSeconds(drillDownTime)" unit="s"></app-mini-card>
+          <app-mini-card label="Drill Up" [value]="formatSeconds(drillUpTime)" unit="s"></app-mini-card>
+        </app-section>
+        <app-section label="DOM Insights">
+          <app-mini-card label="Rows in DOM" [value]="rowsInDOM + ''" unit="rows"></app-mini-card>
+          <app-mini-card label="Total Dataset" [value]="totalDatasetRows.toLocaleString()" unit="rows"></app-mini-card>
+        </app-section>
+      </div>
+    </div>
+  `
+})
+export class MetricsPanelComponent implements MetricsData {
+  public initialLoadTime = 0;
+  public columnsSortingTime = 0;
+  public rowsSortingTime = 0;
+  public filteringTimeRow = 0;
+  public filteringTimeColumn = 0;
+  public groupingTime = 0;
+  public ungroupingTime = 0;
+  public drillDownTime = 0;
+  public drillUpTime = 0;
+  public clearFilteringTimeRow = 0;
+  public clearFilteringTimeColumn = 0;
+  public rowsInDOM = 0;
+  public totalDatasetRows = 0;
+
+  public updateMetrics(partial: Partial<MetricsData>): void {
+    Object.assign(this, partial);
+  }
+
+  public resetMetrics(): void {
+    Object.assign(this, EMPTY_METRICS);
+  }
+
+  public formatSeconds(milliseconds: number): string {
+    return milliseconds > 0 ? (milliseconds / 1000).toFixed(3) : '—';
+  }
+}
+
+/**
+ * Toolbar controls with their own loaded flag state so Load/Reset button
+ * updates do not force a PivotView re-render via the parent.
+ */
+@Component({
+  selector: 'app-benchmark-toolbar',
+  imports: [DropDownListModule, ButtonModule],
+  template: `
+    <div class="top-toolbar">
+      <div class="toolbar-group">
+        <div class="toolbar-column">
+          <span class="toolbar-label">Benchmark Mode</span>
+          <ejs-dropdownlist
+            [dataSource]="scrollModeItems"
+            [fields]="scrollModeFields"
+            [value]="scrollMode"
+            [width]="150"
+            (change)="onModeChange($event)">
+          </ejs-dropdownlist>
+        </div>
+      </div>
+
+      <div class="vertical-separator" aria-hidden="true"></div>
+
+      <div class="toolbar-actions">
+        <button ejs-button cssClass="e-primary" [disabled]="loaded" (click)="load.emit()">
+          {{ loaded ? 'Loaded' : 'Load Data' }}
+        </button>
+        <button ejs-button cssClass="reset-button" (click)="reset.emit()">Reset</button>
+      </div>
+    </div>
+  `
+})
+export class BenchmarkToolbarComponent {
+  @Input() public scrollMode: string = 'virtual';
+  @Output() public modeChange = new EventEmitter<string>();
+  @Output() public load = new EventEmitter<void>();
+  @Output() public reset = new EventEmitter<void>();
+
+  public loaded: boolean = false;
+
+  public scrollModeItems: { [key: string]: Object }[] = [
+    { text: 'Virtual Scroll', value: 'virtual' },
+    { text: 'Data Compression', value: 'compression' },
+    { text: 'Paging', value: 'paging' },
+  ];
+
+  public scrollModeFields: Object = { text: 'text', value: 'value' };
+
+  public onModeChange(e: any): void {
+    const mode = e.value as string;
+    if (mode && mode !== this.scrollMode) {
+      this.modeChange.emit(mode);
+    }
+  }
+
+  public setLoaded(loaded: boolean): void {
+    this.loaded = loaded;
+  }
+
+  public getLoaded(): boolean {
+    return this.loaded;
+  }
+}
+
+@Component({
   selector: 'app-root',
-  imports: [PivotViewModule, DropDownListModule, ButtonModule],
+  imports: [PivotViewModule, MetricsPanelComponent, BenchmarkToolbarComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
   encapsulation: ViewEncapsulation.None,
@@ -66,21 +255,13 @@ export class App {
   public isInit: boolean = true;
   public initialLoadTime!: number;
 
-  // Synchronous cross-handler timing (avoid re-render of Pivot for metrics)
+  // Synchronous cross-handler timing (avoid parent state updates for metrics)
   private _pendingActionType: string = '';
   private _actionStartTime: number = 0;
 
   private loaded: boolean = false;
 
   public scrollMode: 'virtual' | 'compression' | 'paging' = 'virtual';
-
-  public scrollModeItems: { [key: string]: Object }[] = [
-    { text: 'Virtual Scroll', value: 'virtual' },
-    { text: 'Data Compression', value: 'compression' },
-    { text: 'Paging', value: 'paging' },
-  ];
-
-  public scrollModeFields: Object = { text: 'text', value: 'value' };
 
   public toolbarOptions: any = [
     'Grid', 'Chart', 'Export', 'SubTotal', 'GrandTotal', 'Formatting', 'FieldList'
@@ -248,8 +429,8 @@ export class App {
 
   public memberEditorOpen = (args: any): void => {
     const fieldName = args.fieldName;
-    const columns = this.pivotRef.dataSourceSettings.columns.map((c: any) => c.name);
-    const rows = this.pivotRef.dataSourceSettings.rows.map((c: any) => c.name);
+    const columns = (this.pivotRef?.dataSourceSettings.columns || []).map((c: any) => c.name);
+    const rows = (this.pivotRef?.dataSourceSettings.rows || []).map((c: any) => c.name);
     if (columns.includes(fieldName)) {
       this._pendingActionType = "Member editor open - column";
     } else if (rows.includes(fieldName)) {
@@ -271,16 +452,15 @@ export class App {
     }
   };
 
-  public handleModeChange = (mode: 'virtual' | 'compression' | 'paging'): void => {
+  private handleModeChange = (mode: 'virtual' | 'compression' | 'paging'): void => {
     this.resetMetrics();
     this.scrollMode = mode;
     this.pivotRef.refresh();
   };
 
-  public onModeChange = (e: any): void => {
-    const mode = e.value as 'virtual' | 'compression' | 'paging';
+  public onModeChange = (mode: string): void => {
     if (mode !== this.scrollMode) {
-      this.handleModeChange(mode);
+      this.handleModeChange(mode as 'virtual' | 'compression' | 'paging');
     }
   };
 
@@ -334,7 +514,7 @@ export class App {
   };
 
   public onDataBound = (): void => {
-    if ((this.pivotRef?.dataSourceSettings.dataSource)?.length > 0) {
+    if (((this.pivotRef?.dataSourceSettings.dataSource as any[])?.length ?? 0) > 0) {
       if (this.isInit && this.initialLoadTime) {
         const loadTime = new Date().getTime() - this.initialLoadTime;
         this.metricsPanel?.updateMetrics({ initialLoadTime: loadTime });
@@ -403,171 +583,4 @@ export class App {
       }).bind(this);
     }
   };
-}
-
-@Component({
-  selector: 'app-metrics-panel',
-  imports: [],
-  template: `
-    <div class="panel">
-      <div class="panel-head">
-        <span class="panel-head-text">Performance Metrics</span>
-      </div>
-      <div class="metrics-body metrics-body--full">
-        <app-big-card label="Initial Load Time" [value]="formatSeconds(initialLoadTime)" unit="s"></app-big-card>
-        <app-section label="Sorting">
-          <app-mini-card label="Column Sort" [value]="formatSeconds(columnsSortingTime)" unit="s"></app-mini-card>
-          <app-mini-card label="Row Sort" [value]="formatSeconds(rowsSortingTime)" unit="s"></app-mini-card>
-        </app-section>
-        <app-section label="Filtering">
-          <app-mini-card label="Column Filter" [value]="formatSeconds(filteringTimeColumn)" unit="s"></app-mini-card>
-          <app-mini-card label="Row Filter" [value]="formatSeconds(filteringTimeRow)" unit="s"></app-mini-card>
-        </app-section>
-        <app-section label="Clear Filtering">
-          <app-mini-card label="Column Clear" [value]="formatSeconds(clearFilteringTimeColumn)" unit="s"></app-mini-card>
-          <app-mini-card label="Row Clear" [value]="formatSeconds(clearFilteringTimeRow)" unit="s"></app-mini-card>
-        </app-section>
-        <app-section label="Grouping">
-          <app-mini-card label="Applied Group" [value]="formatSeconds(groupingTime)" unit="s"></app-mini-card>
-          <app-mini-card label="Removed Group" [value]="formatSeconds(ungroupingTime)" unit="s"></app-mini-card>
-        </app-section>
-        <app-section label="Drill">
-          <app-mini-card label="Drill Down" [value]="formatSeconds(drillDownTime)" unit="s"></app-mini-card>
-          <app-mini-card label="Drill Up" [value]="formatSeconds(drillUpTime)" unit="s"></app-mini-card>
-        </app-section>
-        <app-section label="DOM Insights">
-          <app-mini-card label="Rows in DOM" [value]="rowsInDOM + ''" unit="rows"></app-mini-card>
-          <app-mini-card label="Total Dataset" [value]="totalDatasetRows.toLocaleString()" unit="rows"></app-mini-card>
-        </app-section>
-      </div>
-    </div>
-  `,
-  styleUrl: './app.css'
-})
-export class MetricsPanelComponent {
-  public initialLoadTime: number = 0;
-  public columnsSortingTime: number = 0;
-  public rowsSortingTime: number = 0;
-  public filteringTimeRow: number = 0;
-  public filteringTimeColumn: number = 0;
-  public groupingTime: number = 0;
-  public ungroupingTime: number = 0;
-  public drillDownTime: number = 0;
-  public drillUpTime: number = 0;
-  public clearFilteringTimeRow: number = 0;
-  public clearFilteringTimeColumn: number = 0;
-  public rowsInDOM: number = 0;
-  public totalDatasetRows: number = 0;
-
-  public updateMetrics(partial: Partial<MetricsData>): void {
-    Object.assign(this, partial);
-  }
-
-  public resetMetrics(): void {
-    this.initialLoadTime = 0;
-    this.columnsSortingTime = 0;
-    this.rowsSortingTime = 0;
-    this.filteringTimeRow = 0;
-    this.filteringTimeColumn = 0;
-    this.groupingTime = 0;
-    this.ungroupingTime = 0;
-    this.drillDownTime = 0;
-    this.drillUpTime = 0;
-    this.clearFilteringTimeRow = 0;
-    this.clearFilteringTimeColumn = 0;
-    this.rowsInDOM = 0;
-    this.totalDatasetRows = 0;
-  }
-
-  public formatSeconds(milliseconds: number): string {
-    return milliseconds > 0 ? (milliseconds / 1000).toFixed(3) : '—';
-  }
-}
-
-@Component({
-  selector: 'app-section',
-  imports: [],
-  template: `
-    <div class="section section--primary">
-      <div class="section-label section-label--primary">{{ label }}</div>
-      <div class="section-row"><ng-content></ng-content></div>
-    </div>
-  `
-})
-export class SectionComponent {
-  public label: string = '';
-}
-
-@Component({
-  selector: 'app-mini-card',
-  imports: [],
-  template: `
-    <div class="mini-card mini-card--primary">
-      <div class="mini-label">{{ label }}</div>
-      <div class="mini-values">
-        <div class="mini-value mini-value--primary">{{ value }}</div>
-        <div class="mini-unit mini-unit--muted">{{ unit }}</div>
-      </div>
-    </div>
-  `
-})
-export class MiniCardComponent {
-  public label: string = '';
-  public value: string = '';
-  public unit: string = '';
-}
-
-@Component({
-  selector: 'app-big-card',
-  imports: [],
-  template: `
-    <div class="big-card">
-      <div class="big-left">
-        <span class="big-label">{{ label }}</span>
-      </div>
-      <div class="big-right">
-        <span class="big-value">{{ value }}</span>
-        <span class="big-chip">{{ unit }}</span>
-      </div>
-    </div>
-  `
-})
-export class BigCardComponent {
-  @Input() public label: string = '';
-  @Input() public value: string = '';
-  @Input() public unit: string = '';
-}
-
-@Component({
-  selector: 'app-benchmark-toolbar',
-  imports: [],
-  template: `
-    <div class="top-toolbar">
-      <div class="toolbar-group">
-        <div class="toolbar-column">
-          <span class="toolbar-label">Benchmark Mode</span>
-        </div>
-      </div>
-
-      <div class="vertical-separator" aria-hidden="true"></div>
-
-      <div class="toolbar-actions">
-        <button ej-button cssClass="e-primary" [disabled]="loaded" (click)="load.emit()">
-          {{ loaded ? 'Loaded' : 'Load Data' }}
-        </button>
-        <button ej-button cssClass="reset-button" (click)="reset.emit()">Reset</button>
-      </div>
-    </div>
-  `
-})
-export class BenchmarkToolbarComponent {
-  public loaded: boolean = false;
-
-  public setLoaded(loaded: boolean): void {
-    this.loaded = loaded;
-  }
-
-  public getLoaded(): boolean {
-    return this.loaded;
-  }
 }
