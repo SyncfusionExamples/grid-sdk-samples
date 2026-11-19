@@ -1,0 +1,212 @@
+@{
+    ViewBag.Title = "PivotTable Performance Sample";
+}
+
+<div class="app-body">
+    <div class="top-toolbar">
+        <div class="toolbar-group">
+            <div class="toolbar-column">
+                <span class="toolbar-label">Benchmark Mode</span>
+                <input type="text" id="mode-dropdown" tabindex="1" />
+            </div>
+        </div>
+
+        <div class="vertical-separator" aria-hidden="true"></div>
+
+        <div class="toolbar-actions">
+            <button id="load-btn" class="e-primary">Load Data</button>
+            <button id="reset-btn" class="reset-button">Reset</button>
+        </div>
+    </div>
+    <div class="outer-content">
+        <div class="pivot-performance-container">
+            @Html.EJS().PivotView("PivotView").Width("100%").Height("100%")
+                .ShowFieldList(true).ShowGroupingBar(true).AllowGrouping(true).AllowDeferLayoutUpdate(true)
+                .AllowDrillThrough(true).AllowExcelExport(true).AllowNumberFormatting(true).AllowConditionalFormatting(true)
+                .AllowPdfExport(true).ShowToolbar(true).AllowCalculatedField(true).EnableFieldSearching(true)
+                .MaxNodeLimitInMemberEditor(50)
+                .Toolbar(new string[] { "Grid", "Chart", "Export", "SubTotal", "GrandTotal", "Formatting", "FieldList" })
+                .DisplayOption(new Syncfusion.EJ2.PivotView.PivotViewDisplayOption { View = Syncfusion.EJ2.PivotView.View.Both })
+                .GridSettings(new Syncfusion.EJ2.PivotView.PivotViewGridSettings { ColumnWidth = 120, RowHeight = 36 })
+                .ChartSettings(new Syncfusion.EJ2.PivotView.PivotViewChartSettings { Title = "Top Universities Analysis" })
+                .DataSourceSettings(dataSource => dataSource
+                    .EnableSorting(true).AllowLabelFilter(true).AllowValueFilter(true).ShowHeaderWhenEmpty(false)
+                    .ExpandAll(false).EmptyCellsTextContent("-")
+                    .Rows(rows =>
+                    {
+                        rows.Name("rank_display").Caption("Rank").Add();
+                        rows.Name("university").Caption("University").Add();
+                    })
+                    .Columns(columns =>
+                    {
+                        columns.Name("region").Caption("Region").Add();
+                        columns.Name("country").Caption("Country").Add();
+                    })
+                    .Values(values =>
+                    {
+                        values.Name("international_students").Caption("Students").Add();
+                        values.Name("faculty_count").Caption("Faculty").Add();
+                        values.Name("score").Caption("Score").Add();
+                    })
+                    .Filters(filters =>
+                    {
+                        filters.Name("type").Caption("University Type").Add();
+                    })
+                    .FormatSettings(formats =>
+                    {
+                        formats.Name("international_students").Format("N0").Add();
+                        formats.Name("faculty_count").Format("N0").Add();
+                    })
+                    .ConditionalFormatSettings(conditionalFormats =>
+                    {
+                        conditionalFormats.Measure("international_students").Value1(1000).Value2(5000).Conditions("Between")
+                            .Style(style => style.BackgroundColor("#FFA500").Color("white").FontFamily("Tahoma").FontSize("12px"))
+                            .ApplyGrandTotals(false).Add();
+                        conditionalFormats.Measure("international_students").Value1(8000).Conditions("GreaterThan")
+                            .Style(style => style.BackgroundColor("#0C860C").Color("white").FontFamily("Tahoma").FontSize("12px"))
+                            .ApplyGrandTotals(false).Add();
+                        conditionalFormats.Measure("faculty_count").Value1(500).Value2(2000).Conditions("Between")
+                            .Style(style => style.BackgroundColor("#FFA500").Color("white").FontFamily("Tahoma").FontSize("12px"))
+                            .ApplyGrandTotals(false).Add();
+                        conditionalFormats.Measure("faculty_count").Value1(4000).Conditions("GreaterThan")
+                            .Style(style => style.BackgroundColor("#0C860C").Color("white").FontFamily("Tahoma").FontSize("12px"))
+                            .ApplyGrandTotals(false).Add();
+                    })
+                ).Render()
+        </div>
+        <div class="panel">
+            <div class="panel-head">
+                <span class="panel-head-text">Performance Metrics</span>
+            </div>
+            <div class="metrics-body metrics-body--full">
+                <div class="big-card">
+                    <div class="big-left">
+                        <span class="big-label">Initial Load Time</span>
+                    </div>
+                    <div class="big-right">
+                        <span class="big-value" id="metric-initial-load">&mdash;</span>
+                        <span class="big-chip">s</span>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Sorting</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Sort</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-sort">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Sort</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-sort">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Filtering</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Filter</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-filter">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Filter</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-filter">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Clear Filtering</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Column Clear</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-column-clear">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Row Clear</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-row-clear">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Grouping</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Applied Group</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-group">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Removed Group</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-ungroup">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">Drill</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Drill Down</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-drill-down">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Drill Up</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-drill-up">&mdash;</div>
+                                <div class="mini-unit mini-unit--muted">s</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section section--primary">
+                    <div class="section-label section-label--primary">DOM Insights</div>
+                    <div class="section-row">
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Rows in DOM</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-rows-in-dom">0</div>
+                                <div class="mini-unit mini-unit--muted">rows</div>
+                            </div>
+                        </div>
+                        <div class="mini-card mini-card--primary">
+                            <div class="mini-label">Total Dataset</div>
+                            <div class="mini-values">
+                                <div class="mini-value mini-value--primary" id="metric-total-dataset">0</div>
+                                <div class="mini-unit mini-unit--muted">rows</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/performance-benchmark.js"></script>
+}
