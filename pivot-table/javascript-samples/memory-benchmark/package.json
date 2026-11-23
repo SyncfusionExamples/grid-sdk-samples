@@ -1,0 +1,12 @@
+{
+  "name": "pivot-memory-benchmark",
+  "private": true,
+  "scripts": {
+    "test": "node --test benchmark.test.cjs",
+    "setup": "node scripts/install-releases.cjs",
+    "benchmark": "node scripts/run.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.47.0"
+  }
+}
