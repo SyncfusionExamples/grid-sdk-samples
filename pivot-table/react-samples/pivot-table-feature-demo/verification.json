@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-24",
+  "browser": "158.0.8127.37",
+  "checks": [
+    "initial totals and calculated measure",
+    "Field List opens",
+    "calculated-field dialog opens",
+    "Revenue remains in values after drag toward columns",
+    "drill-through shows two contributing rows"
+  ],
+  "pageErrors": [],
+  "license": "No key supplied; trial notice visible. No licensing credentials included."
+}
