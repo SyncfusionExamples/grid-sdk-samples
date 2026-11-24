@@ -1,0 +1,23 @@
+{
+  "name": "pivot-table-feature-demo",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "verify": "node verify.mjs"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-base": "35.2.12",
+    "@syncfusion/ej2-react-pivotview": "35.2.12",
+    "@syncfusion/ej2-tailwind3-theme": "35.2.12",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "vite": "8.3.8"
+  },
+  "devDependencies": {
+    "playwright": "1.65.1"
+  }
+}
